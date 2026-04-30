@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { config } from "@/data/config";
 import { FormError } from "./form-error";
 import { FormField } from "./form-field";
 import { SubmitButton } from "./submit-button";
@@ -14,18 +13,48 @@ export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError("");
+    setSuccess("");
+
     if (!name.trim() || !message.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
       setError("Please add valid name, email and message.");
       return;
     }
+
     setPending(true);
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.location.href = `mailto:${config.email}?subject=${subject}&body=${body}`;
-    setPending(false);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as
+          | { error?: unknown }
+          | null;
+        const message =
+          typeof data?.error === "string"
+            ? data.error
+            : "Failed to send message. Please try again.";
+        setError(message);
+        return;
+      }
+
+      setSuccess("Message sent successfully. I'll get back to you soon.");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -54,6 +83,7 @@ export function ContactForm() {
         />
       </FormField>
       <FormError message={error} />
+      {success ? <p className="text-sm text-emerald-500">{success}</p> : null}
       <SubmitButton pending={pending} />
     </form>
   );

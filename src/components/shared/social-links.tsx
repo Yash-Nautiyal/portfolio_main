@@ -1,23 +1,17 @@
 import { config } from "@/data/config";
 
 export function SocialLinks() {
-  const links = [
-    { label: "GitHub", href: config.social.github.link },
-    { label: "LinkedIn", href: config.social.linkedin.link },
-    { label: "Email", href: config.social.gmail.link },
-  ];
-
   return (
     <div className="flex items-center gap-4">
-      {links.map((item) => (
+      {Object.entries(config.social).map(([key, value]) => (
         <a
-          key={item.label}
-          href={item.href}
+          key={key}
+          href={value.link}
           target="_blank"
           rel="noreferrer"
-          className="text-sm text-zinc-700 transition hover:text-sky-600 dark:text-zinc-300 dark:hover:text-sky-400"
+          className="text-sm text-(--text-secondary) transition hover:text-sky-600 dark:hover:text-sky-400"
         >
-          {item.label}
+          {key === "gmail" ? "Email" : key.charAt(0).toUpperCase() + key.slice(1)}
         </a>
       ))}
     </div>
