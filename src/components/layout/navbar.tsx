@@ -62,10 +62,10 @@ export function Navbar() {
               <li key={item.label}>
                 <Link
                   href={href}
-                  className={`rounded-full px-3 py-1.5 text-sm transition hover:text-sky-500 ${
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition hover:text-sky-500 ${
                     pathname === "/" && activeSection === item.href.replace("#", "")
                       ? "bg-sky-500/10 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400"
-                      : "text-(--text-tertiary)"
+                      : "text-(--text-secondary)"
                   }`}
                 >
                   {item.label}

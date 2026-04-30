@@ -138,27 +138,38 @@ const projects: Project[] = [
     get content() {
       return (
         <div>
-          <TypographyP className="font-mono ">
-            EmployeeOS is a <HighlightSkill>Flutter</HighlightSkill> application built to
-            centralize day-to-day employee workflows in one place. It is designed to make
-            internal operations smoother by combining communication, recruitment, and
-            productivity tools into a single mobile experience.
+          <TypographyP className="font-mono">
+            EmployeeOS is a <HighlightSkill>Flutter</HighlightSkill> app that unifies internal
+            operations into one mobile platform. It replaces scattered tools for communication,
+            hiring, task tracking, and file management with a single, role-aware workspace.
           </TypographyP>
+    
           <ProjectsLinks repo={this.github} />
-          <TypographyH3 className="my-4 mt-8">Problems </TypographyH3>
+    
+          <TypographyH3 className="my-4 mt-8">Tech Stack & Architecture</TypographyH3>
           <p className="font-mono mb-2">
-            Organizations often use disconnected tools for chat, recruitment, tasks, and
-            file sharing, leading to fragmented workflows, duplicated effort, and slower
-            decisions.
+            Built using <HighlightSubskill>MVVM Architecture</HighlightSubskill> with modular,
+            reusable components for maintainability and scale. Core engineering focus includes{" "}
+            <HighlightSubskill>State Management</HighlightSubskill>,{" "}
+            <HighlightSubskill>REST API Integration</HighlightSubskill>,{" "}
+            <HighlightSubskill>Role-Based Access Control</HighlightSubskill>,{" "}
+            <HighlightSubskill>Realtime Messaging</HighlightSubskill>, and{" "}
+            <HighlightSubskill>Theme System Design</HighlightSubskill>.
           </p>
+    
+          <TypographyH3 className="my-4 mt-8">Problem Solved</TypographyH3>
+          <p className="font-mono mb-2">
+            Teams often rely on disconnected products for chat, recruitment, tasks, and files,
+            causing context switching, duplicated effort, and slower decisions. EmployeeOS
+            centralizes these workflows to improve operational speed and visibility.
+          </p>
+    
           <TypographyH3 className="my-4 mt-8">UI/UX</TypographyH3>
           <p className="font-mono mb-2">
-            Designed a clean, modern interface inspired by{" "}
-            <HighlightSubskill>Material</HighlightSubskill> principles and
-            productivity-focused web layouts. Built reusable components, responsive
-            layouts and light/dark themes to maintain consistency across modules.
-            Additonally, different preset themes and fonts are available to users to
-            choose from.
+            Designed a clean interface inspired by{" "}
+            <HighlightSubskill>Material Design</HighlightSubskill> and productivity-first
+            layouts. Implemented responsive views, reusable UI patterns, dark/light mode, and
+            user-selectable themes and fonts for personalization and consistency.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -172,10 +183,11 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/welcome_dark.jpg`,
             ]}
           />
+    
           <TypographyH3 className="my-4 mt-8">Hiring Dashboard</TypographyH3>
           <p className="font-mono mb-2">
-            Centralized hiring pipeline to manage candidates, track stages, and review
-            application progress from a single dashboard.
+            Built a centralized hiring pipeline to track candidates across stages, improve
+            recruiter visibility, and speed up decision-making.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -187,19 +199,21 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/hiring5.jpg`,
             ]}
           />
+    
           <TypographyH3 className="my-4 mt-8">Chat</TypographyH3>
           <p className="font-mono mb-2">
-            Real-time team messaging with thread-based conversations to improve internal
-            communication and reduce dependency on external chat tools.
+            Implemented real-time, thread-based team messaging to reduce dependency on external
+            tools and keep discussions aligned with internal workflows.
           </p>
           <SlideShow
             variant="mobile-multi"
             images={[`${BASE_PATH}/employeeOS/welcome.jpg`]}
-          />{" "}
+          />
+    
           <TypographyH3 className="my-4 mt-8">Kanban</TypographyH3>
           <p className="font-mono mb-2">
-            Task board for planning, assigning, and tracking work status across teams with
-            clear workflow visibility.
+            Created a collaborative task board for planning, assigning, and tracking work with
+            clear workflow status across teams.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -209,11 +223,12 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/kanban3.jpg`,
               `${BASE_PATH}/employeeOS/kanban4.jpg`,
             ]}
-          />{" "}
+          />
+    
           <TypographyH3 className="my-4 mt-8">File Manager</TypographyH3>
           <p className="font-mono mb-2">
-            Shared workspace for uploading, organizing, and accessing files securely
-            within the organization.
+            Delivered a secure shared file workspace for uploading, organizing, and accessing
+            team assets with role-aware visibility.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -224,10 +239,11 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/filemanager4.jpg`,
             ]}
           />
+    
           <TypographyH3 className="my-4 mt-8">Recruitment</TypographyH3>
           <p className="font-mono mb-2">
-            Supports end-to-end recruitment flow: publishing openings, collecting
-            applications, screening candidates, and updating hiring stages.
+            Supported end-to-end recruitment workflows: posting roles, collecting applications,
+            screening candidates, and managing interview/hiring stages.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -241,10 +257,11 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/interview.jpg`,
             ]}
           />
-          <TypographyH3 className="my-4 mt-8">Users</TypographyH3>
+    
+          <TypographyH3 className="my-4 mt-8">Users & Access Control</TypographyH3>
           <p className="font-mono mb-2">
-            Admin controls for user lifecycle management, profile visibility, and
-            role-based access permissions.
+            Implemented user lifecycle management, profile controls, and role-based permission
+            handling for secure organization-level administration.
           </p>
           <SlideShow
             variant="mobile-multi"
@@ -280,29 +297,53 @@ const projects: Project[] = [
     get content(): React.JSX.Element {
       return (
         <div>
-          <TypographyP className="font-mono ">
-            2DOO is a minimal yet powerful task management app designed to help users plan
-            better, stay focused, and never miss deadlines. It combines clean UI with
-            smart productivity features such as overdue tracking, reminders, and real-time
-            task updates.
+          <TypographyP className="font-mono">
+            2DOO is a production-grade task management app built to help users plan
+            smarter, stay focused, and never miss deadlines. It combines a clean, minimal
+            interface with powerful productivity workflows such as overdue tracking, push
+            notifications, and real-time synchronization.
           </TypographyP>
+
           <ProjectsLinks repo={this.github} />
 
-          <TypographyH3 className="my-4 ">Key Features</TypographyH3>
+          <TypographyH3 className="my-4">Key Features</TypographyH3>
           <ul className="font-mono mb-2 list-disc list-inside">
-            <li>Task creation and management</li>
-            <li>Overdue tracking and reminders</li>
-            <li>Real-time task updates</li>
-            <li>Task categorization</li>
+            <li>
+              Full <HighlightSubskill>CRUD</HighlightSubskill> workflows for tasks and
+              subtasks
+            </li>
+            <li>
+              Smart due-date handling with automated{" "}
+              <HighlightSubskill>Overdue Tracking</HighlightSubskill>
+            </li>
+            <li>
+              Local and remote <HighlightSubskill>Push Notifications</HighlightSubskill>{" "}
+              for timely reminders
+            </li>
+            <li>
+              <HighlightSubskill>Real-time Sync</HighlightSubskill> across sessions and
+              devices
+            </li>
+            <li>
+              Dynamic categorization, filtering, and priority-based task organization
+            </li>
           </ul>
-          <TypographyH3 className="my-4 mt-8">UI/UX</TypographyH3>
+
+          <TypographyH3 className="my-4 mt-8">Architecture & Engineering</TypographyH3>
           <p className="font-mono mb-2">
-            Designed a clean, modern interface inspired by{" "}
-            <HighlightSubskill>Material</HighlightSubskill> principles and
-            productivity-focused layouts. Built reusable components, responsive layouts
-            and light/dark themes to maintain consistency across modules. Additonally,
-            different preset themes and fonts are available to users to choose from.
+            The app follows a feature-first layered architecture with{" "}
+            <HighlightSubskill>BLoC</HighlightSubskill> state management and the{" "}
+            <HighlightSubskill>Repository Pattern</HighlightSubskill> for clean separation
+            of concerns. The codebase is organized for scalability and maintainability
+            using reusable modules, explicit state transitions, and predictable data flow.
           </p>
+          <p className="font-mono mb-2">
+            Backend capabilities are powered by{" "}
+            <HighlightSubskill>Supabase Auth</HighlightSubskill> and{" "}
+            <HighlightSubskill>PostgreSQL</HighlightSubskill>, including secure
+            authentication, real-time updates, and reliable cloud persistence.
+          </p>
+
           <SlideShow
             variant="playstore"
             images={[
@@ -313,21 +354,25 @@ const projects: Project[] = [
               `${BASE_PATH}/2doo/Samsung Galaxy S21 Ultra Screenshot 5.png`,
             ]}
           />
-          <p className="font-mono mb-2 mt-5">
-            Under the hood, 2DOO is engineered using{" "}
-            <HighlightSubskill>Clean Architecture</HighlightSubskill> and the{" "}
-            <HighlightSubskill>BLoC</HighlightSubskill> state management pattern, ensuring
-            a highly modular and maintainable codebase. The backend is powered by{" "}
-            <HighlightSubskill>Supabase</HighlightSubskill>
-            for secure authentication and seamless{" "}
-            <HighlightSubskill>real-time</HighlightSubskill> database syncing across
-            devices.
-          </p>
+
+          <TypographyH3 className="my-4 mt-8">UI/UX & Product Design</TypographyH3>
           <p className="font-mono mb-2">
-            2DOO isn&apos;t just a simple checklist; it&apos;s a production-ready
-            application built to demonstrate industrial-grade{" "}
-            <HighlightSkill>Flutter</HighlightSkill> development practices and efficient
-            data handling.
+            Designed a modern, productivity-focused interface inspired by{" "}
+            <HighlightSubskill>Material Design</HighlightSubskill>. Built modular and
+            reusable UI components with responsive layouts, consistent visual language,
+            and personalization features such as light/dark mode, preset color themes, and
+            typography controls.
+          </p>
+
+          <TypographyH3 className="my-4 mt-8">Delivery & Impact</TypographyH3>
+          <p className="font-mono mb-2">
+            2DOO demonstrates complete end-to-end product ownership from architecture and
+            implementation to release engineering. The app was compiled into an optimized{" "}
+            <HighlightSubskill>12.3 MB</HighlightSubskill> Android App Bundle and
+            successfully shipped via the{" "}
+            <HighlightSubskill>Google Play Console</HighlightSubskill>, highlighting
+            production-ready <HighlightSkill>Flutter</HighlightSkill> and{" "}
+            <HighlightSkill>Dart</HighlightSkill> development practices.
           </p>
         </div>
       );
@@ -337,32 +382,59 @@ const projects: Project[] = [
     id: "newsfeed",
     category: "News App",
     title: "NewsFeed",
-    src: "/assets/projects/newsfeed/home.jpg",
+    src: "/assets/projects/newsfeed/landing.png",
     screenshots: ["landing.png"],
     live: "",
+    github: "https://github.com/Yash-Nautiyal/NewsFeed.git",
     skills: {
       frontend: [PROJECT_SKILLS.flutter, PROJECT_SKILLS.dart],
       backend: [PROJECT_SKILLS.firebase, PROJECT_SKILLS.mongodb],
     },
     get content() {
       return (
-        <div>
-          <TypographyP className="font-mono ">
-            The Booking Desk is your ultimate travel consultation hub, designed to turn
-            your wanderlust dreams into reality. With a focus on smooth and visually
-            captivating animations, navigating the site feels like a breeze—it&apos;s
-            almost as if the destinations are calling you.
+        <div className="space-y-6">
+          <TypographyP className="font-mono text-lg leading-relaxed">
+            NewsFeed is a production-style <HighlightSkill>Flutter</HighlightSkill> and{" "}
+            <HighlightSkill>Dart</HighlightSkill> application focused on real-time news
+            consumption, category-based browsing, and fake-news verification.
           </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-          <p className="font-mono mb-2 mt-8">
-            A sleek, modern interface greets you, featuring the latest travel tips, deals,
-            and must-visit spots around the globe.
-          </p>
-          <TypographyH3 className="my-4 mt-8">Blogs</TypographyH3>
-          <p className="font-mono mb-2">
-            Dive into the curated articles written by travel experts. Whether you&apos;re
-            looking for hidden gems or travel hacks, our blog section has you covered.
-          </p>
+
+          <ProjectsLinks repo={this.github} />
+
+          <div>
+            <TypographyH3 className="mb-3">Core Features</TypographyH3>
+            <ul className="font-mono list-disc list-inside space-y-2">
+              <li>
+                <HighlightSubskill>Fake-news detection</HighlightSubskill> for text and
+                images using external Flask ML endpoints.
+              </li>
+              <li>
+                Advanced keyword search with date-range filters and category filtering.
+              </li>
+              <li>
+                Secure <HighlightSkill>Firebase</HighlightSkill>{" "}
+                <HighlightSubskill>Authentication</HighlightSubskill> (Email/Password &
+                Google Sign-In) with{" "}
+                <HighlightSubskill>SharedPreferences</HighlightSubskill> session routing.
+              </li>
+              <li>
+                <HighlightSubskill>Cloud Firestore</HighlightSubskill> integrations for
+                personalized bookmark persistence and profile management.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <TypographyH3 className="mb-3">Architecture & UI</TypographyH3>
+            <p className="font-mono leading-relaxed">
+              Engineered with a feature-first modular structure utilizing{" "}
+              <HighlightSubskill>BLoC</HighlightSubskill> for predictable state
+              management. The UI features a draggable and animated home layout, swipeable
+              breaking-news cards, and polished loading/error states built on{" "}
+              <HighlightSubskill>Material</HighlightSubskill> design principles.
+            </p>
+          </div>
+
           <SlideShow
             variant="mobile-multi"
             images={[
