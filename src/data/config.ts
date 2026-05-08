@@ -23,7 +23,7 @@ const config = {
   author: "Yash Nautiyal",
   email: "nautiyalyash4@gmail.com",
   site: "",
-  resume: "https://drive.google.com/file/d/1o-_LEGlwnB2dkCCb23cRAeG1tdKxgUDE/view?usp=sharing",
+  resume: "https://drive.google.com/file/d/17ZU4ynaAr4SyoAedPkeFUgsxuLoRF_dF/view?usp=sharing",
   get ogImg() {
     return this.site + "/assets/seo/og-image.svg";
   },
