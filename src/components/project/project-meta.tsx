@@ -2,6 +2,7 @@ import type { Project } from "@/data/projects";
 import { Card } from "@/components/ui/card";
 import { TechStackList } from "./tech-stack-list";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function ProjectMeta({ project }: { project: Project }) {
   return (
@@ -16,6 +17,16 @@ export function ProjectMeta({ project }: { project: Project }) {
         {project.github ? (
           <a href={project.github} target="_blank" rel="noreferrer">
             <Button size="sm">GitHub</Button>
+          </a>
+        ) : null}
+        {project.live ? (
+          <a href={project.live} target="_blank" rel="noreferrer">
+            <Image
+              src={"https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png"}
+              alt="Get it on Google Play"
+              width={120}
+              height={120}
+            />
           </a>
         ) : null}
       </div>

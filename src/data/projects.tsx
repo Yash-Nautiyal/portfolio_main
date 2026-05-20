@@ -5,7 +5,7 @@ import {
 } from "@/components/project/description-highlights";
 import { Button } from "@/components/ui/button";
 import { TypographyH3, TypographyP } from "@/components/ui/typography";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { RiReactjsFill } from "react-icons/ri";
@@ -17,6 +17,7 @@ import {
   SiDart,
   SiMongodb,
 } from "react-icons/si";
+import Image from "next/image";
 const BASE_PATH = "/assets/projects";
 
 const ProjectsLinks = ({ live, repo }: { live?: string; repo?: string }) => {
@@ -29,10 +30,12 @@ const ProjectsLinks = ({ live, repo }: { live?: string; repo?: string }) => {
           target="_new"
           href={live}
         >
-          <Button variant={"default"} size={"sm"}>
-            Visit Website
-            <ArrowUpRight className="ml-3 w-5 h-5" />
-          </Button>
+          <Image
+            src={"https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png"}
+            alt="Get it on Google Play"
+            width={150}
+            height={150}
+          />
         </Link>
       )}
       {repo && (
@@ -292,7 +295,7 @@ const projects: Project[] = [
         PROJECT_SKILLS.postgres,
       ],
     },
-    live: "",
+    live: "https://play.google.com/store/apps/details?id=tech.app2doo",
     github: "https://github.com/Yash-Nautiyal/2D00.git",
     get content(): React.JSX.Element {
       return (
@@ -304,7 +307,7 @@ const projects: Project[] = [
             notifications, and real-time synchronization.
           </TypographyP>
 
-          <ProjectsLinks repo={this.github} />
+          <ProjectsLinks repo={this.github} live={this.live}/>
 
           <TypographyH3 className="my-4">Key Features</TypographyH3>
           <ul className="font-mono mb-2 list-disc list-inside">
