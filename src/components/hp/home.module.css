@@ -1,0 +1,1057 @@
+/* Hanging-phone home. Dark only: the reference is a dark window on a bright wallpaper. */
+.page {
+  --card: #131313;
+  --card-2: #1b1b1b;
+  --ink: #fff;
+  --ink-2: #a3a3a3;
+  --ink-3: #6b6b6b;
+  --line: #ffffff1a;
+  --flutter: #54c5f8;
+  --hot: #ffca28;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 36px 28px;
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  isolation: isolate;
+}
+.mono { font-family: var(--font-geist-mono), monospace; }
+
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(70% 60% at 0% 0%, var(--wp-a, #1e7bff) 0, transparent 60%),
+    radial-gradient(60% 60% at 70% 0%, var(--wp-b, #7a3cff) 0, transparent 60%),
+    radial-gradient(60% 70% at 100% 100%, var(--wp-c, #ff2d6f) 0, transparent 60%),
+    radial-gradient(60% 60% at 0% 100%, var(--wp-d, #ff7a2d) 0, transparent 55%),
+    var(--wp-base, #1a1030);
+  transition: background 0.6s;
+}
+
+/* ---------- window ---------- */
+.win {
+  position: relative;
+  width: min(1320px, 100%);
+  height: min(860px, calc(100dvh - 72px));
+  min-height: 660px;
+  background: #000;
+  border-radius: 26px;
+  padding: 8px 10px 10px;
+  display: grid;
+  grid-template-rows: 44px minmax(0, 1fr);
+  gap: 6px;
+  box-shadow: 0 50px 120px -30px #000d, 0 0 0 1px #ffffff12;
+  overflow: hidden;
+  animation: winIn 0.9s var(--ease) both;
+}
+@keyframes winIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--ink-2);
+  min-width: 0;
+  /* above the cards and the 3D stage, so the device menu isn't clipped or covered */
+  position: relative;
+  z-index: 60;
+}
+.lights { display: flex; gap: 7px; margin-right: 10px; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; }
+.lights i:nth-child(3) { background: #28c840; }
+.path { font-family: var(--font-geist-mono), monospace; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spacer { flex: 1; }
+.tool {
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 9px;
+  background: #161616;
+  border: 1px solid #ffffff12;
+  color: #ddd;
+  font: inherit;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.tool:hover { background: #222; border-color: #ffffff26; }
+.tool:active { transform: scale(0.96); }
+.tool[aria-disabled] { opacity: 0.55; cursor: default; }
+.tool[aria-disabled]:active { transform: none; }
+.hot { color: var(--hot); }
+.deviceTool { color: #fff; cursor: default; }
+.deviceTool i { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 3px #3ddc8426; }
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+}
+.col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+
+/* ---------- cards ---------- */
+.card {
+  position: relative;
+  background: var(--card);
+  border-radius: 18px;
+  overflow: hidden;
+  opacity: 0;
+}
+.win[data-ready] .card {
+  animation: cardIn 0.8s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.intro { flex: 1; padding: 22px; display: flex; flex-direction: column; min-height: 0; }
+.handle { font-size: 13px; color: var(--ink-2); }
+.hello {
+  margin-top: 10px;
+  font-size: clamp(44px, 5vw, 70px);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.wave { display: inline-block; transform-origin: 70% 85%; }
+.win[data-ready] .wave { animation: wave 2.2s 0.9s ease-in-out; }
+.hello:hover .wave { animation: wave 1.4s ease-in-out; }
+@keyframes wave {
+  0%, 60%, 100% { transform: none; }
+  10%, 30% { transform: rotate(16deg); }
+  20%, 40% { transform: rotate(-9deg); }
+}
+.bio { margin-top: auto; padding-top: 18px; font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+.bio b { color: #fff; font-weight: 500; }
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding: 0; }
+.chip {
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #ffffff24;
+  background: var(--card);
+  color: #e5e5e5;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.chip:hover, .chip:focus-visible { background: #fff; color: #000; border-color: #fff; outline: none; }
+.chip[data-lifted] { opacity: 0.25; }
+.chipGhost {
+  position: fixed;
+  z-index: 60;
+  margin: 0;
+  pointer-events: none;
+  cursor: grabbing;
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 16px 30px #000b;
+}
+.chipFlutter:not(:hover):not(:focus-visible) { border-color: #54c5f8aa; color: var(--flutter); }
+
+.device { height: 96px; flex: none; display: flex; align-items: center; padding: 0 22px; }
+.device b { display: block; font-size: 16px; font-weight: 600; }
+.device small { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.map { position: absolute; right: 0; top: 0; height: 100%; width: 58%; mask-image: linear-gradient(90deg, transparent, #000 45%); }
+.mapDot {
+  position: absolute;
+  right: 22%;
+  top: 44%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #fff;
+  animation: ping 2.2s infinite;
+}
+@keyframes ping {
+  0% { box-shadow: 0 0 0 0 #fff8; }
+  70%, 100% { box-shadow: 0 0 0 14px #fff0; }
+}
+
+.cta { flex: none; display: flex; gap: 10px; padding: 12px; }
+.btnMain, .btnAlt {
+  height: 52px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 15px;
+  transition: transform 0.2s var(--ease), background 0.2s;
+}
+.btnMain { flex: 1; background: #fff; color: #000; }
+.btnAlt { width: 100px; background: #262626; color: #fff; }
+.btnMain:hover, .btnAlt:hover { transform: translateY(-2px); }
+.btnAlt:hover { background: #333; }
+
+/* honeycomb: 2-3-2 offset rows; --x is in half-cell steps */
+.honeyCard { flex: none; height: 40%; min-height: 230px; display: grid; place-items: center; }
+.honey { --w: 96px; --h: 110px; position: relative; width: calc(var(--w) * 3); height: calc(var(--h) * 2.5); }
+.hex {
+  position: absolute;
+  left: calc(var(--x) * var(--w) / 2);
+  top: calc(var(--y) * var(--h) * 0.75);
+  width: var(--w);
+  height: var(--h);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: #ffffff1c;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3), background 0.3s;
+}
+.hexInner {
+  position: absolute;
+  inset: 1px;
+  clip-path: inherit;
+  background: var(--card);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  transition: background 0.3s;
+}
+.appIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  color: #fff;
+  transition: transform 0.3s var(--ease);
+}
+.appIcon svg { width: 19px; height: 19px; }
+.hex em { font-style: normal; font-size: 11px; color: var(--ink-2); height: 0; opacity: 0; transition: height 0.3s, opacity 0.3s; }
+a.hex:hover, a.hex:focus-visible { transform: scale(1.07); z-index: 1; background: #ffffff45; outline: none; }
+a.hex:hover .hexInner, a.hex:focus-visible .hexInner { background: #1e1e1e; }
+a.hex:hover em, a.hex:focus-visible em { height: 14px; opacity: 1; }
+a.hex:hover .appIcon { transform: translateY(-2px); }
+.hexCentre .hexInner { background: radial-gradient(circle, #10263b 0, var(--card) 70%); }
+.hexCentre .appIcon { color: var(--flutter); }
+
+.builds { flex: 1; padding: 16px 12px 10px; display: flex; flex-direction: column; min-height: 0; overflow: auto; scrollbar-width: none; }
+.builds h2 { font-size: 15px; font-weight: 600; padding: 0 8px 6px; }
+.builds ul { list-style: none; padding: 0; display: grid; gap: 0; }
+.buildRow {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 12px;
+  transition: background 0.25s;
+}
+button.buildRow:hover, button.buildRow:focus-visible, .buildRow[data-on] { background: #ffffff0f; outline: none; }
+.buildRow b { display: block; font-size: 14.5px; font-weight: 600; }
+.buildRow small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--ink-2); }
+.buildThumb { flex: none; width: 42px; height: 42px; border-radius: 11px; object-fit: cover; background: #222; }
+.buildMono { display: grid; place-items: center; font-size: 13px; font-weight: 700; background: #1f1f1f; }
+.runChip {
+  margin-left: auto;
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffffff12;
+  color: #ddd;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s, transform 0.25s, background 0.25s;
+}
+.buildRow:hover .runChip, .buildRow:focus-visible .runChip { opacity: 1; transform: none; }
+.buildRow[data-on] .runChip { opacity: 1; transform: none; background: #3ddc8422; color: #3ddc84; }
+
+/* ---------- stage + hanging phone ---------- */
+/* WebGL layer over a CSS3D layer holding the live screen; a mesh punches the hole where it shows */
+.canvas { position: absolute !important; inset: 0; z-index: 10; pointer-events: none; }
+.cssLayer { position: absolute; inset: 0; z-index: 5; }
+.screen3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--sr, calc(var(--pw) * 0.13));
+  overflow: hidden;
+  background: #000;
+  font-size: calc(var(--pw) * 0.058);
+  color: #fff;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+.stage[data-hover="body"] { cursor: grab; }
+.stage[data-hover="strap"] { cursor: ew-resize; }
+.stage {
+  position: relative;
+  background: var(--card);
+  border-radius: 18px;
+  overflow: hidden;
+  container-type: size;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  /* phone width tracks stage height so the whole device always fits */
+  --pw: clamp(150px, 27cqh, 250px);
+  --ph: calc(var(--pw) * 2.12);
+}
+.stage[data-dragging] { cursor: grabbing; }
+.stage[data-drop-ready] .screen3d { box-shadow: inset 0 0 0 3px #54c5f877; }
+.stage[data-drop-over] .screen3d { box-shadow: inset 0 0 0 4px var(--flutter), inset 0 0 40px #54c5f888; }
+.stage[data-drop-ready] .caption span::after { content: " · drop the skill on the phone"; color: var(--flutter); }
+.stageGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 55% at 15% 0%, var(--glow-a, #2f9e5b), transparent 60%),
+    radial-gradient(90% 60% at 95% 5%, var(--glow-b, #2348c9), transparent 60%);
+  opacity: 0.75;
+  mask-image: linear-gradient(#000 0, #0008 40%, transparent 75%);
+}
+.dotGrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #ffffff33 1px, transparent 1.6px);
+  background-size: 48px 48px;
+  background-position: center 24px;
+}
+.caption {
+  z-index: 30;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  text-align: center;
+  pointer-events: none;
+  font-size: 12px;
+  color: var(--ink-3);
+  opacity: 0;
+  transition: opacity 0.6s 0.6s;
+}
+.stage[data-dropped] .caption { opacity: 1; }
+.caption b { display: block; font-size: 15px; font-weight: 600; color: #fff; }
+
+/* ---------- phone OS ---------- */
+.os {
+  position: absolute;
+  inset: 0;
+  color: #fff;
+  background:
+    radial-gradient(120% 60% at 20% 0%, #2a5cff 0, transparent 60%),
+    radial-gradient(100% 60% at 100% 100%, #c4205f 0, transparent 60%),
+    linear-gradient(170deg, #0f1a45, #0b0b18 55%, #2a0b1f);
+}
+.view { position: absolute; inset: 0; animation: viewIn 0.42s var(--ease) both; }
+.os[data-app] .view { animation-name: appIn; }
+@keyframes viewIn { from { opacity: 0; transform: scale(1.04); } }
+@keyframes appIn { from { opacity: 0; transform: scale(0.86); border-radius: 30%; } }
+
+.statusBar {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7% 9% 0;
+  font-size: 0.85em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.os[data-tone="light"] .statusBar { color: #111; }
+.os[data-screen="about"] .statusBar { background: #f4f4f6; padding-bottom: 2.5%; } /* scrolled text stays out of the status bar */
+.statusIcons { display: flex; gap: 0.3em; align-items: center; }
+.statusIcons svg { height: 0.8em; width: auto; fill: currentColor; }
+
+.homeBar {
+  position: absolute;
+  z-index: 5;
+  bottom: 1.6%;
+  left: 50%;
+  width: 40%;
+  height: 16px;
+  transform: translateX(-50%);
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.homeBar::after { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 4px; border-radius: 3px; background: #fff; transition: transform 0.2s; }
+.os[data-tone="light"] .homeBar::after { background: #111; }
+.homeBar:hover::after { transform: scaleX(1.15); }
+
+/* lock */
+.lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #0003;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.35s var(--ease), opacity 0.3s;
+  outline: none;
+}
+.lock[data-dragging] { transition: none; cursor: grabbing; }
+.lock[data-leaving] { transform: translateY(-100%) !important; opacity: 0; }
+.lock:focus-visible { box-shadow: inset 0 0 0 2px var(--flutter); }
+.lockTime { margin-top: 24%; font-size: 3.6em; font-weight: 300; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.lockDate { margin-top: 3%; font-size: 0.9em; color: #ffffffc0; }
+.notif {
+  margin-top: auto;
+  width: 86%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 9px;
+  border-radius: 14px;
+  background: #ffffff1f;
+  backdrop-filter: blur(8px);
+  font-size: 0.78em;
+  line-height: 1.3;
+}
+.notif b { display: block; font-size: 1.05em; }
+.notif div span { color: #ffffffcc; }
+.notifIcon {
+  flex: none;
+  width: 2.4em;
+  height: 2.4em;
+  border-radius: 30%;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.85em;
+  background: linear-gradient(135deg, #54c5f8, #01579b);
+}
+.swipeHint { margin: 8% 0 11%; display: grid; justify-items: center; font-size: 0.72em; color: #ffffffb0; }
+.swipeHint span { font-size: 1.4em; line-height: 0.8; animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(-5px); } }
+
+/* home */
+.home { position: absolute; inset: 0; padding: 22% 7% 0; }
+.glance { display: grid; gap: 1px; margin-bottom: 12%; }
+.glance b { font-size: 2.1em; font-weight: 400; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.glance span { font-size: 0.78em; color: #ffffffc0; }
+.glance .glanceJob { margin-top: 4px; color: var(--flutter); }
+.appGrid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em 0.4em; }
+.appGrid li { animation: iconIn 0.5s var(--ease) both; animation-delay: calc(var(--n) * 45ms + 80ms); }
+@keyframes iconIn { from { opacity: 0; transform: translateY(10px) scale(0.8); } }
+.appBtn { width: 100%; border: 0; background: none; color: #fff; font: inherit; cursor: pointer; display: grid; justify-items: center; gap: 4px; padding: 0; }
+.appSquircle {
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 28%;
+  display: grid;
+  place-items: center;
+  font-size: 0.82em;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  box-shadow: 0 6px 14px #0006, inset 0 1px 0 #ffffff40;
+  transition: transform 0.2s var(--ease);
+}
+/* logo tiles: the shape comes from the tile's own class; the logo is contained, then scaled per build */
+.appLogo { position: relative; overflow: hidden; }
+.appLogo img { object-fit: contain; transform: scale(var(--logo-scale, 1)); pointer-events: none; }
+.appBtn:hover .appSquircle, .appBtn:focus-visible .appSquircle { transform: scale(1.08); }
+.appBtn:active .appSquircle { transform: scale(0.92); }
+.appBtn:focus-visible { outline: none; }
+.appLabel { font-size: 0.6em; color: #ffffffe0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.aboutIcon { background: linear-gradient(135deg, #ffb36b, #ff5f8a); color: #2a0d16; }
+.careerIcon { background: linear-gradient(140deg, #6d5efc, #1f9d6a); }
+.dock {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 5.5%;
+  height: 15%;
+  border-radius: 1.6em;
+  background: #ffffff1f;
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.dock button {
+  border: 0;
+  cursor: pointer;
+  width: 16.5%;
+  aspect-ratio: 1;
+  border-radius: 28%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 1.1em;
+  transition: transform 0.2s var(--ease);
+}
+.dock button:hover, .dock button:focus-visible { transform: translateY(-3px) scale(1.06); outline: none; }
+.dock svg { width: 1em; height: 1em; } /* lucide icons default to 24px */
+
+/* running app */
+/* Like a Flutter SafeArea: screenshots sit between the status bar and the home bar, on the app's page colour. */
+.app { position: absolute; inset: 0; background: var(--surface, #000); }
+.splash { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; background: var(--app); }
+.splashIcon {
+  width: 5em;
+  aspect-ratio: 1;
+  border-radius: 28%;
+  background: #fff;
+  color: var(--app);
+  display: grid;
+  place-items: center;
+  font-size: 1.1em;
+  font-weight: 800;
+  box-shadow: 0 14px 30px #0005;
+  animation: pop 0.6s var(--ease) both;
+}
+@keyframes pop { from { transform: scale(0.5); opacity: 0; } }
+.splash b { font-size: 1em; }
+.pagerWrap { position: absolute; inset: 0; }
+.app[data-safe] .pagerWrap { inset: 6.4% 0 5.6%; } /* ends a few px above the home bar */
+.pager {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  cursor: grab;
+  outline: none;
+  animation: fadeIn 0.35s ease both;
+}
+.pager::-webkit-scrollbar { display: none; }
+.pager[data-dragging] { scroll-snap-type: none; cursor: grabbing; }
+.pager[data-locked] { overflow-x: hidden; cursor: auto; } /* no sideways swipe, wheel or trackpad paging */
+.slide { position: relative; flex: none; width: 100%; height: 100%; scroll-snap-align: start; }
+.slide, .pushedScroll { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.slide::-webkit-scrollbar, .pushedScroll::-webkit-scrollbar { display: none; }
+.pushedScroll { position: absolute; inset: 0; cursor: grab; }
+.shot { position: relative; }
+/* long pages can scroll their end up past the dots and app buttons at the bottom */
+.slide > .shot { margin-bottom: 20%; } /* clears the app buttons */
+.pushedScroll > .shot { margin-bottom: 20%; }
+.shot img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.tap { position: absolute; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+.tap:active { background: #ffffff26; }
+.tap:focus-visible { outline: 2px solid #ffffffb0; }
+.pushed { position: absolute; inset: 0; overflow: hidden; background: var(--surface, #000); animation: pushIn 0.3s var(--ease) both; }
+@keyframes pushIn { from { transform: translateX(35%); opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; } }
+.pagerDots { position: absolute; left: 0; right: 0; bottom: 19%; display: flex; justify-content: center; gap: 4px; pointer-events: none; }
+.pagerDots i { width: 5px; height: 5px; border-radius: 3px; background: #ffffff70; box-shadow: 0 0 4px #0008; transition: width 0.3s, background 0.3s; }
+.pagerDots i[data-on] { width: 14px; background: #fff; }
+.os[data-tone="light"] .pagerDots i { background: #0002; box-shadow: none; }
+.os[data-tone="light"] .pagerDots i[data-on] { background: #000a; }
+.appActions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 5% 11%;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+}
+.appActions a,
+.appActions button {
+  pointer-events: auto;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.62em;
+  font-weight: 600;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #111c;
+  border: 1px solid #ffffff2a;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+.appActions > a:first-of-type { background: #fff; color: #000; border-color: #fff; }
+.app:not([data-live]) .appActions { bottom: 7%; padding-bottom: 0; } /* sits clear above the home bar */
+/* icon buttons: an icon one line tall with even padding, so they match the pills' height */
+.appActions > .actIcon { display: grid; place-items: center; padding: 7px; }
+.appActions > .actIcon svg { width: 1.2em; height: 1.2em; }
+/* light screenshots: a solid dark pill and a light one, so neither disappears on the page */
+.os[data-tone="light"] .app:not([data-live]) .appActions > * { background: #fffc; color: #111; border-color: #0002; }
+.os[data-tone="light"] .app:not([data-live]) .appActions > a:first-of-type { background: #111; color: #fff; border-color: #111; }
+/* live app: clear of the status bar at the top, actions in a dark strip above the home bar */
+.live { position: absolute; left: 0; right: 0; top: 6.5%; bottom: 13%; overflow: hidden; background: #000; }
+.live iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: #fff; }
+.app[data-live] .appActions { padding: 3% 4% 0; height: 13%; gap: 3px; align-items: flex-start; background: #000; }
+.app[data-live] .appActions > * { font-size: 0.55em; padding: 4px 7px; }
+
+/* about */
+.about { position: absolute; inset: 0; background: #f4f4f6; color: #111; padding: 22% 8% 26%; overflow: auto; scrollbar-width: none; }
+.aboutHead { display: grid; justify-items: center; text-align: center; gap: 2px; }
+.aboutAvatar { width: 34%; font-size: 1.9em; margin-bottom: 6px; }
+.aboutHead b { font-size: 1.15em; }
+.aboutHead span { font-size: 0.75em; color: #666; }
+.aboutList { margin-top: 10%; background: #fff; border-radius: 12px; padding: 2px 10px; }
+.aboutList div { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; font-size: 0.75em; border-bottom: 1px solid #eee; }
+.aboutList div:last-child { border: 0; }
+.aboutList dt { color: #777; }
+.aboutList dd { font-weight: 600; text-align: right; }
+.aboutLabel { margin-top: 9%; font-size: 0.6em; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #888; }
+.aboutSkills { list-style: none; padding: 0; margin-top: 3%; display: flex; flex-wrap: wrap; gap: 4px; }
+.aboutSkills button { font: inherit; font-size: 0.62em; font-weight: 600; padding: 3px 8px; border: 0; border-radius: 999px; background: #e3f4fd; color: #01579b; cursor: pointer; }
+.aboutSkills button:hover, .aboutSkills button:focus-visible { background: #01579b; color: #fff; outline: none; }
+
+/* shared app chrome */
+.topBar {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 17% 6% 3%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9em;
+}
+.topBar[data-tone="light"] { color: #111; background: linear-gradient(#f4f4f6 70%, #f4f4f600); }
+.topBar button { border: 0; background: none; color: inherit; display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; cursor: pointer; }
+.topBar button:hover, .topBar button:focus-visible { background: #8882; outline: none; }
+.topBar svg { width: 1.1em; height: 1.1em; }
+
+/* skill */
+.skillScreen { position: absolute; inset: 0; padding: 32% 8% 0; background: radial-gradient(90% 50% at 50% 18%, color-mix(in srgb, var(--skill) 55%, transparent), transparent 70%), #07101c; overflow: auto; scrollbar-width: none; }
+.skillHead { display: grid; justify-items: center; text-align: center; gap: 4px; }
+.skillLogo { width: 30%; height: auto; filter: drop-shadow(0 8px 18px #0008); animation: pop 0.6s var(--ease) both; }
+.skillHead b { font-size: 1.4em; margin-top: 4px; }
+.skillHead p { font-size: 0.72em; color: #ffffffc0; line-height: 1.4; }
+.skillLabel { margin-top: 12%; font-size: 0.66em; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff90; }
+.skillApps { list-style: none; padding: 0; margin-top: 4%; display: grid; gap: 5px; }
+.skillApps button { width: 100%; display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 12px; border: 0; background: #ffffff12; color: #fff; font: inherit; font-size: 0.8em; cursor: pointer; text-align: left; }
+.skillApps button:hover, .skillApps button:focus-visible { background: #ffffff22; outline: none; }
+.skillApps .appSquircle { width: 2.4em; font-size: 0.7em; }
+.skillJob { margin-top: 8%; font-size: 0.68em; color: var(--flutter); text-align: center; }
+
+/* compose */
+.compose { position: absolute; inset: 0; background: #f4f4f6; color: #111; padding: 32% 6% 12%; display: flex; flex-direction: column; gap: 6px; font-size: 0.85em; }
+.composeTo { display: flex; gap: 8px; align-items: baseline; padding: 6px 2px 8px; border-bottom: 1px solid #ddd; font-size: 0.85em; }
+.composeTo span { color: #888; }
+.field { display: grid; gap: 2px; font-size: 0.72em; color: #666; }
+.field input, .field textarea { font: inherit; font-size: 1.25em; color: #111; background: #fff; border: 1px solid #dedede; border-radius: 8px; padding: 6px 8px; outline: none; width: 100%; }
+.field textarea { resize: none; flex: 1; min-height: 2.4em; }
+.field input:focus, .field textarea:focus { border-color: #01579b; box-shadow: 0 0 0 2px #54c5f855; }
+.fieldGrow { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.formError { font-size: 0.7em; color: #c62828; }
+.sendBtn { display: flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 8px; background: #01579b; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.sendBtn svg { width: 1em; height: 1em; }
+.sendBtn:disabled { opacity: 0.6; cursor: progress; }
+
+/* resume */
+/* resume: a white page in a dark PDF viewer, scrolling between the top bar and the download pill */
+.cvScreen { position: absolute; inset: 0; background: #2a2a2e; }
+.cvScroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 30% 5% 34%; }
+.cvScroll::-webkit-scrollbar { display: none; }
+.cvPage { background: #fff; color: #1a1a1a; border-radius: 3px; padding: 9% 7% 10%; box-shadow: 0 10px 28px #0009; font-size: 0.62em; line-height: 1.38; }
+.cvPage h1 { font-size: 2em; font-weight: 700; letter-spacing: -0.01em; text-align: center; line-height: 1.1; }
+.cvContact { margin-top: 0.45em; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 0.7em; color: #555; }
+.cvContact a { color: #1a1a1a; text-decoration: underline; text-decoration-color: #0004; text-underline-offset: 2px; }
+.cvPage h2 { margin-top: 1.25em; padding-bottom: 0.15em; border-bottom: 1px solid #1a1a1a; font-size: 0.95em; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+.cvPage h2 + p { margin-top: 0.45em; }
+.cvItem { margin-top: 0.65em; }
+.cvItem p { margin-top: 0.2em; }
+.cvRow { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6em; }
+.cvRow span { flex: none; color: #555; }
+.cvSub { display: block; color: #444; }
+.cvPage ul { margin-top: 0.25em; padding-left: 1.1em; list-style: disc; }
+.cvPage li { margin-top: 0.2em; }
+.cvPage li b { font-weight: 700; }
+.cvSkills { margin-top: 0.45em; }
+.cvSkills div { margin-top: 0.2em; }
+.cvSkills dt { display: inline; font-weight: 700; }
+.cvSkills dt::after { content: ": "; }
+.cvSkills dd { display: inline; }
+.cvActions { position: absolute; left: 0; right: 0; bottom: 9%; display: flex; justify-content: center; }
+.cvActions a { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; background: var(--flutter); color: #012; font-size: 0.75em; font-weight: 700; }
+.cvActions svg { width: 1.1em; height: 1.1em; }
+
+/* github */
+.ghScreen { position: absolute; inset: 0; background: #0d1117; padding: 32% 7% 0; overflow: auto; scrollbar-width: none; }
+.ghHead { display: grid; justify-items: center; gap: 2px; }
+.ghAvatar { width: 32%; height: auto; border-radius: 50%; border: 2px solid #30363d; }
+.ghHead b { margin-top: 4px; font-size: 1.05em; }
+.ghHead span { font-size: 0.72em; color: #8b949e; }
+.ghLabel { margin-top: 10%; font-size: 0.68em; color: #8b949e; }
+.ghRepos { list-style: none; padding: 0; margin-top: 4px; border: 1px solid #30363d; border-radius: 10px; overflow: hidden; }
+.ghRepos li + li { border-top: 1px solid #30363d; }
+.ghRepos a { display: flex; align-items: center; gap: 8px; padding: 7px 8px; font-size: 0.75em; }
+.ghRepos a:hover, .ghRepos a:focus-visible { background: #161b22; outline: none; }
+.ghRepos b { display: block; color: #58a6ff; }
+.ghRepos small { color: #8b949e; font-size: 0.85em; }
+.extIcon { margin-left: auto; width: 1em; height: 1em; color: #8b949e; flex: none; }
+.wideBtn { display: block; margin-top: 8%; text-align: center; padding: 7px; border-radius: 8px; background: #238636; font-size: 0.75em; font-weight: 600; }
+
+/* linkedin */
+/* LinkedIn: grey page with white full-width cards, scrolling under the top bar */
+.liScreen { position: absolute; inset: 0; background: #f4f2ee; color: #111; }
+.liScroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 26% 0 16%; }
+.liScroll::-webkit-scrollbar { display: none; }
+.liCard { background: #fff; padding: 5% 6%; margin-bottom: 2.5%; }
+.liCard h3 { font-size: 0.85em; font-weight: 700; margin-bottom: 3%; }
+.liHead { padding-top: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 2px; } /* one track, so the bleeding banner can't widen it */
+.liBanner { width: calc(100% + 12%); margin: 0 -6%; aspect-ratio: 4 / 1; background: linear-gradient(120deg, #0a66c2, #54c5f8); }
+.liAvatar { width: 28%; margin-top: -14%; font-size: 1.5em; border: 3px solid #fff; border-radius: 50%; }
+.liName { margin-top: 3px; font-size: 1.1em; }
+.liHeadline { font-size: 0.68em; color: #333; line-height: 1.35; }
+.liLoc { display: flex; align-items: center; gap: 3px; font-size: 0.6em; color: #666; }
+.liLoc svg { width: 1em; height: 1em; }
+.liBtns { margin-top: 6%; display: flex; gap: 5px; width: 100%; }
+.liBtn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 4px; white-space: nowrap; border-radius: 999px; border: 1px solid #0a66c2; background: #0a66c2; color: #fff; font-size: 0.66em; font-weight: 600; }
+.liBtnAlt { background: #fff; color: #0a66c2; }
+.liBtn svg { width: 1em; height: 1em; }
+.liAbout { font-size: 0.64em; line-height: 1.45; color: #333; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.liRow { display: flex; gap: 8px; align-items: flex-start; padding: 3% 0; }
+.liRow + .liRow { border-top: 1px solid #eee; }
+.liRow div { display: grid; gap: 1px; min-width: 0; }
+.liRow b { font-size: 0.7em; }
+.liRow span:not(.liLogo) { font-size: 0.62em; color: #333; }
+.liRow small { font-size: 0.56em; color: #777; }
+.liLogo { flex: none; width: 3em; aspect-ratio: 1; border-radius: 4px; display: grid; place-items: center; font-size: 0.48em; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+.liLogoImg { font-size: 0.75em; border: 1px solid #e6e6e6; } /* wide wordmarks need a bigger tile than the text badges */
+.liEdu { background: #e8f0f8; color: #0a66c2; }
+.liEdu svg { width: 1.3em; height: 1.3em; }
+.liSkills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.liSkills li { font-size: 0.6em; font-weight: 600; padding: 3px 8px; border-radius: 999px; border: 1px solid #c8c8c8; color: #333; }
+
+/* store */
+.storeScreen { position: absolute; inset: 0; background: #fff; color: #111; padding: 32% 7% 0; }
+.storeHead { display: flex; gap: 10px; align-items: center; }
+.storeHead .appSquircle { width: 26%; font-size: 0.9em; flex: none; }
+.storeHead b { display: block; font-size: 1.1em; }
+.storeHead div span { display: block; font-size: 0.72em; color: #01875f; font-weight: 600; }
+.storeHead small { font-size: 0.66em; color: #666; }
+.installBtn { display: block; margin-top: 8%; text-align: center; padding: 7px; border-radius: 999px; background: #01875f; color: #fff; font-size: 0.8em; font-weight: 600; }
+.storeShots { list-style: none; padding: 0; margin-top: 8%; display: flex; gap: 5px; overflow: hidden; }
+.storeShots li { position: relative; flex: none; width: 30%; aspect-ratio: 9 / 16; border-radius: 6px; overflow: hidden; background: #eee; }
+.storeShots img { object-fit: cover; object-position: top; }
+.storeAbout { margin-top: 6%; font-size: 0.72em; color: #555; }
+
+/* career */
+.career { position: absolute; inset: 0; background: radial-gradient(90% 40% at 50% 0%, color-mix(in srgb, var(--job) 45%, transparent), transparent 70%), #0b0b0e; padding: 30% 6% 12%; overflow: auto; scrollbar-width: none; transition: background 0.6s; }
+.careerTabs { display: flex; gap: 4px; padding: 3px; border-radius: 999px; background: #ffffff14; }
+.careerTabs button { flex: 1; border: 0; border-radius: 999px; padding: 5px 0; background: none; color: #ffffffb0; font: inherit; font-size: 0.72em; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 4px; }
+.careerTabs button[aria-selected="true"] { background: #fff; color: #000; }
+.careerTabs i { font-style: normal; font-size: 0.8em; color: #3ddc84; }
+.careerTabs button[aria-selected="true"] i { color: #1f9d6a; }
+.careerBody { margin-top: 8%; animation: viewIn 0.4s var(--ease) both; }
+.careerBody > b { display: block; font-size: 1.15em; }
+.careerBody > span { display: block; font-size: 0.7em; color: #ffffffa0; margin-top: 2px; }
+.careerBody ul { margin-top: 6%; padding-left: 1.1em; display: grid; gap: 6px; font-size: 0.68em; line-height: 1.45; color: #ffffffd0; }
+.careerBody ul b { color: color-mix(in srgb, var(--job) 50%, #fff); font-weight: 600; }
+.careerEdu { margin-top: 8%; padding-top: 6px; border-top: 1px solid #ffffff1a; font-size: 0.62em; color: #ffffff80; }
+.aboutOverview { margin-top: 8%; font-size: 0.68em; line-height: 1.45; color: #444; }
+.careerHead { margin-top: 10px; }
+
+/* notification banner */
+.banner {
+  position: absolute;
+  z-index: 8;
+  left: 5%;
+  right: 5%;
+  top: 11%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 9px;
+  border-radius: 14px;
+  background: #262628f2;
+  color: #fff;
+  box-shadow: 0 10px 24px #000a;
+  font-size: 0.78em;
+  line-height: 1.3;
+  animation: bannerIn 0.5s var(--ease) both;
+}
+.banner b { display: block; }
+.banner div span { color: #ffffffcc; }
+@keyframes bannerIn { from { transform: translateY(-140%); opacity: 0; } }
+
+/* toast: flutter-run style line under the phone */
+.toast {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  max-width: 92%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #1a1a1c;
+  border: 1px solid #ffffff22;
+  box-shadow: 0 12px 30px #000a;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11.5px;
+  color: #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: toastIn 0.35s var(--ease) both;
+}
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 8px); } }
+.toast .ok, .term .ok { color: #3ddc84; }
+
+/* ---------- boot ---------- */
+.boot {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.term {
+  width: min(640px, 88%);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #bdbdbd;
+}
+.term p { opacity: 0; animation: line 0.01s forwards; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes line { to { opacity: 1; } }
+.term .cmd { color: var(--flutter); }
+.term .ok { color: #3ddc84; }
+.cursor { width: 9px; height: 17px; background: #fff; animation: line 0.01s forwards, blink 1s steps(1) infinite !important; }
+@keyframes blink { 50% { visibility: hidden; } }
+.skip { position: absolute; bottom: 24px; font-size: 12px; color: var(--ink-3); }
+
+/* ---------- responsive (phase 5 replaces this with the app layout) ---------- */
+@media (max-width: 1080px) {
+  .win { height: auto; min-height: 0; }
+  .grid { grid-template-columns: 1fr 1fr; }
+  .stage { grid-column: 1 / -1; order: -1; height: 640px; }
+  .honeyCard { height: auto; padding: 18px 0; }
+  .toolbar .tool span { display: none; }
+}
+@media (max-width: 640px) {
+  .page { padding: 10px; }
+  .grid { grid-template-columns: 1fr; }
+  .stage { height: 560px; }
+  .intro { min-height: 380px; }
+  .path, .deviceTool { display: none; }
+  .honey { --w: 84px; --h: 97px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win, .win[data-ready] .card, .wave, .mapDot, .view, .appGrid li, .swipeHint span, .splashIcon, .pushed, .toast, .banner, .skillLogo { animation: none !important; }
+  .card { opacity: 1; }
+}
+
+/* job switcher under the pass while it hangs in front (the phone's tabs are covered) */
+.jobSwitch {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #0d0d10d9;
+  border: 1px solid #ffffff1f;
+  backdrop-filter: blur(8px);
+  animation: toastIn 0.35s var(--ease) both;
+}
+.jobSwitch button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: #ffffffb0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.jobSwitch button:hover, .jobSwitch button:focus-visible { color: #fff; background: #ffffff12; outline: none; }
+.jobSwitch button[aria-selected="true"] { background: #fff; color: #000; }
+.jobSwitch i { width: 8px; height: 8px; border-radius: 50%; background: var(--job); }
+.jobSwitch small { font-size: 11px; font-weight: 500; opacity: 0.6; }
+@media (max-width: 640px) { .jobSwitch small { display: none; } }
+
+/* ---------- phase 4: Flutter dev tools ---------- */
+.tool[aria-pressed="true"] { background: #54c5f822; border-color: #54c5f866; color: #fff; }
+.deviceWrap { position: relative; }
+.deviceTool { cursor: pointer; }
+.deviceMenu {
+  position: absolute;
+  z-index: 50;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 210px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #161618f2;
+  border: 1px solid #ffffff1f;
+  box-shadow: 0 20px 40px #000a;
+  backdrop-filter: blur(10px);
+  transform-origin: top right;
+  animation: menuIn 0.14s cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes menuIn { from { opacity: 0; transform: scale(0.96) translateY(-4px); } }
+.deviceMenu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: #ddd;
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.deviceMenu button:hover, .deviceMenu button:focus-visible { background: #ffffff12; outline: none; }
+.deviceMenu button[aria-checked="true"] { color: #fff; }
+.deviceMenu button i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #666; }
+.deviceMenu button[aria-checked="true"] i { background: #3ddc84; border-color: #3ddc84; }
+.deviceMenu small { margin-left: auto; color: var(--ink-3); font-size: 11px; }
+
+/* hot reload: a quick flash over the window */
+.reloadFlash { position: absolute; inset: 0; z-index: 45; pointer-events: none; border-radius: inherit; background: radial-gradient(60% 50% at 50% 40%, #ffca2833, transparent 70%); animation: flash 0.6s ease-out both; }
+@keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+
+/* debug paint: widget outlines + names, padding tinted */
+.win[data-debug] [data-widget] { outline: 1.5px solid #00e5ff; outline-offset: -1px; }
+.win[data-debug] [data-widget]::after {
+  content: attr(data-widget);
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  top: 0;
+  padding: 0 6px;
+  border-radius: 0 0 6px 0;
+  background: #00e5ff;
+  color: #002a33;
+  font: 600 10px/16px var(--font-geist-mono), monospace;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.win[data-debug] .card[data-widget] { box-shadow: inset 0 0 0 14px #ff4fa31a; }
+.win[data-debug] .stage { outline-color: #ff4fa3; }
+.win[data-debug] .tap { outline: 1.5px dashed #ffca28; outline-offset: -1px; background: #ffca281f; }
+.win[data-debug] .stage::after { background: #ff4fa3; color: #330014; }
+.win[data-debug] .chips, .win[data-debug] .cta, .win[data-debug] .builds ul { position: relative; }
+
+/* ---------- per-device OS looks: Android 14 (Pixel 8, Pixel Tablet), iOS 18 (iPhone 15) ---------- */
+.lockGlyph { display: none; }
+.lockTime span { display: block; }
+.notif small { font-size: 0.82em; font-weight: 400; opacity: 0.7; }
+.lockShortcuts { position: absolute; left: 7%; right: 7%; bottom: 4.5%; display: flex; justify-content: space-between; pointer-events: none; }
+.lockShortcuts svg { box-sizing: content-box; width: 0.95em; height: 0.95em; padding: 0.7em; border-radius: 50%; background: #0000004d; backdrop-filter: blur(8px); }
+.searchBar { position: absolute; left: 6%; right: 6%; bottom: 5.5%; height: 8%; border-radius: 999px; display: flex; align-items: center; gap: 0.7em; padding: 0 6%; background: var(--m3-surface); color: var(--m3); pointer-events: none; }
+.searchBar b { margin-right: auto; font-size: 1.15em; font-weight: 700; background: conic-gradient(from -45deg, #ea4335 0 25%, #4285f4 0 50%, #34a853 0 75%, #fbbc05 0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.searchBar svg { width: 1em; height: 1em; }
+.pageDots { position: absolute; left: 0; right: 0; bottom: 20%; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+.pageDots i { width: 5px; height: 5px; border-radius: 50%; background: #ffffff66; }
+.pageDots i[data-on] { background: #fff; }
+
+/* Android 14 / Material You: dynamic-colour wallpaper and tones */
+.os[data-os="android"] {
+  --m3: #bfe9cf;
+  --m3-surface: #1c2b24eb;
+  background:
+    radial-gradient(110% 55% at 10% 5%, #3f7c60 0, transparent 60%),
+    radial-gradient(90% 55% at 100% 95%, #b8955a 0, transparent 60%),
+    linear-gradient(165deg, #12251d, #0d1512 55%, #2a2312);
+}
+/* clock left, icons right, both centred on the punch hole */
+.os[data-os="android"] .statusBar { padding-top: 4.6%; padding-inline: 7.5%; font-size: 0.78em; font-weight: 500; }
+.os[data-os="android"] .statusIcons { gap: 0.2em; }
+.os[data-os="android"] .statusIcons svg { height: 0.95em; }
+.os[data-os="android"] .homeBar { width: 30%; }
+.os[data-os="android"] .homeBar::after { height: 3px; top: 7px; opacity: 0.9; }
+.os[data-os="android"] .lock { background: none; }
+.os[data-os="android"] .lockDate { align-self: flex-start; margin: 17% 0 0 8%; font-size: 0.78em; font-weight: 500; color: #fff; }
+.os[data-os="android"] .lockTime { margin-top: 5%; display: grid; justify-items: center; font-size: 5.6em; font-weight: 400; line-height: 0.84; letter-spacing: -0.02em; color: var(--m3); }
+.os[data-os="android"] .notif { margin-top: 10%; width: 88%; padding: 10px 11px; border-radius: 1.4em; background: var(--m3-surface); backdrop-filter: none; }
+.os[data-os="android"] .notif small::before { content: "· "; }
+.os[data-os="android"] .notifIcon, .os[data-os="android"] .banner .notifIcon { border-radius: 50%; }
+.os[data-os="android"] .swipeHint { margin-top: auto; }
+.os[data-os="android"] .lockShortcuts svg { border-radius: 34%; background: var(--m3-surface); color: var(--m3); backdrop-filter: none; }
+.os[data-os="android"] .glance { margin-bottom: 14%; }
+.os[data-os="android"] .glance b { display: none; } /* the time lives in the status bar */
+.os[data-os="android"] .glance span { font-size: 1.05em; color: #fff; }
+.os[data-os="android"] .glance .glanceJob { margin-top: 3px; font-size: 0.72em; color: var(--m3); }
+.os[data-os="android"] .appGrid .appSquircle,
+.os[data-os="android"] .dock button,
+.os[data-os="android"] .splashIcon { border-radius: 50%; box-shadow: 0 2px 6px #0005; }
+.os[data-os="android"] .appLabel { font-size: 0.58em; font-weight: 500; letter-spacing: 0.01em; color: #fff; }
+.os[data-os="android"] .dock { left: 4%; right: 4%; bottom: 15%; height: 11%; background: none; backdrop-filter: none; }
+.os[data-os="android"] .dock button { width: 15.5%; }
+.os[data-os="android"] .banner { border-radius: 1.4em; background: #26332cf2; }
+
+/* iOS 18: clock and icons sit either side of the Dynamic Island */
+.os[data-device="iphone"] .statusBar { display: grid; grid-template-columns: 1fr 36% 1fr; justify-items: center; padding-top: 4%; padding-inline: 4%; font-weight: 600; letter-spacing: -0.01em; }
+.os[data-device="iphone"] .statusIcons { grid-column: 3; }
+.os[data-os="ios"] .statusIcons svg { height: 0.72em; }
+.os[data-os="ios"] .homeBar { width: 36%; bottom: 1%; }
+.os[data-os="ios"] .homeBar::after { height: 5px; }
+.os[data-os="ios"] .lockGlyph { display: block; margin-top: 15%; width: 0.8em; height: 0.8em; }
+.os[data-os="ios"] .lockDate { margin-top: 3%; font-size: 0.85em; font-weight: 600; color: #ffffffd9; }
+.os[data-os="ios"] .lockTime { margin-top: 0; font-size: 4.5em; font-weight: 700; letter-spacing: -0.03em; }
+.os[data-os="ios"] .lockTime span { display: inline; }
+.os[data-os="ios"] .lockTime span:last-child:not(:empty)::before { content: ":"; }
+/* a second card peeking out under the first: a stacked notification group */
+.os[data-os="ios"] .notif { border-radius: 1.3em; background: #ffffff38; backdrop-filter: blur(14px) saturate(1.4); box-shadow: 0 7px 0 -4px #ffffff30; }
+.os[data-os="ios"] .notif b { display: flex; justify-content: space-between; align-items: baseline; }
+.os[data-os="ios"] .glance { margin-bottom: 9%; padding: 0.7em 0.85em; border-radius: 1.2em; background: #ffffff26; backdrop-filter: blur(12px); }
+.os[data-os="ios"] .appGrid .appSquircle,
+.os[data-os="ios"] .dock button,
+.os[data-os="ios"] .splashIcon { border-radius: 23%; }
+.os[data-os="ios"] .appLabel { font-size: 0.58em; color: #fff; text-shadow: 0 1px 3px #0008; }
+.os[data-os="ios"] .dock { left: 3.5%; right: 3.5%; bottom: 4.5%; height: 14%; border-radius: 2.1em; background: #ffffff33; backdrop-filter: blur(20px) saturate(1.6); }
+.os[data-os="ios"] .banner { border-radius: 1.3em; background: #3a3a3ce8; backdrop-filter: blur(16px); }
+
+/* Pixel Tablet: same Android look, status bar in the top bezel line, wider grid, centred dock */
+.os[data-device="tablet"] .statusBar { padding-top: 2%; padding-inline: 4%; font-size: 0.72em; }
+.os[data-device="tablet"] .homeBar { width: 18%; }
+.os[data-device="tablet"] .lockDate { margin-top: 9%; margin-left: 6%; }
+.os[data-device="tablet"] .notif { width: 60%; }
+.os[data-device="tablet"] .home { padding: 9% 6% 0; }
+.os[data-device="tablet"] .appGrid { grid-template-columns: repeat(6, 1fr); }
+.os[data-device="tablet"] .dock { left: 22%; right: 22%; bottom: 15.5%; height: 10%; }
+.os[data-device="tablet"] .searchBar { left: 22%; right: 22%; bottom: 6.5%; height: 7%; }
+.hotText { color: var(--hot); }
+/* the hot-reload line is long: let toasts wrap */
+.toast { white-space: normal !important; text-align: center; line-height: 1.5; }

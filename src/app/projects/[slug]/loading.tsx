@@ -1,12 +1,15 @@
-import { Spinner } from "@/components/ui/spinner";
+import { CaseWindow } from "@/components/project/case-window";
+import s from "@/components/project/case-study.module.css";
 
 export default function ProjectLoading() {
   return (
-    <main className="mx-auto flex min-h-[50vh] w-full max-w-5xl items-center justify-center px-4 py-16">
-      <div className="flex items-center gap-3 text-sm text-zinc-500">
-        <Spinner />
-        Loading project details...
+    <CaseWindow path="yash_nautiyal / lib / builds">
+      <div className={`${s.card} ${s.status}`} role="status">
+        <p className={s.term}>
+          <b>$</b> flutter run --case-study <span className={s.cursor} aria-hidden />
+        </p>
+        <p>Loading project details…</p>
       </div>
-    </main>
+    </CaseWindow>
   );
 }

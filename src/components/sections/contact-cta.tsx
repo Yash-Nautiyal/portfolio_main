@@ -24,16 +24,14 @@ export function ContactCtaSection() {
           {Object.entries(config.social).map(([key, value]) => (
             <div key={key}>
               <a href={value.link} target="_blank" rel="noopener noreferrer">
-                <ListItem
-                  children={
-                    <div className="flex items-center gap-5 justify-start">
-                      <div className="bg-(--surface) rounded-xl p-2.5">
-                        <img src={value.img} alt={key} className="w-5 h-5" />
-                      </div>
-                      <span className="text-sm text-(--text-secondary)">{removeMailto(value.link)}</span>
+                <ListItem>
+                  <div className="flex items-center gap-5 justify-start">
+                    <div className="bg-(--surface) rounded-xl p-2.5">
+                      <img src={value.img} alt={key} className="w-5 h-5" />
                     </div>
-                  }
-                />
+                    <span className="text-sm text-(--text-secondary)">{removeMailto(value.link)}</span>
+                  </div>
+                </ListItem>
               </a>
             </div>
           ))}

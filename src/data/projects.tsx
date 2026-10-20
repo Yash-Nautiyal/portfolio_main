@@ -1,12 +1,9 @@
 import SlideShow from "@/components/project/project-gallery";
 import {
+  CaseSection,
   HighlightSkill,
   HighlightSubskill,
 } from "@/components/project/description-highlights";
-import { Button } from "@/components/ui/button";
-import { TypographyH3, TypographyP } from "@/components/ui/typography";
-import { ArrowUpRight, Play } from "lucide-react";
-import Link from "next/link";
 import { ReactNode } from "react";
 import { RiReactjsFill } from "react-icons/ri";
 import {
@@ -17,43 +14,7 @@ import {
   SiDart,
   SiMongodb,
 } from "react-icons/si";
-import Image from "next/image";
 const BASE_PATH = "/assets/projects";
-
-const ProjectsLinks = ({ live, repo }: { live?: string; repo?: string }) => {
-  return (
-    <div className="flex flex-col md:flex-row items-center justify-start gap-3 my-3 mb-8">
-      {live && (
-        <Link
-          className="font-mono underline flex gap-2"
-          rel="noopener"
-          target="_new"
-          href={live}
-        >
-          <Image
-            src={"https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png"}
-            alt="Get it on Google Play"
-            width={150}
-            height={150}
-          />
-        </Link>
-      )}
-      {repo && (
-        <Link
-          className="font-mono underline flex gap-2"
-          rel="noopener"
-          target="_new"
-          href={repo}
-        >
-          <Button variant={"default"} size={"sm"}>
-            Github
-            <ArrowUpRight className="ml-3 w-5 h-5" />
-          </Button>
-        </Link>
-      )}
-    </div>
-  );
-};
 
 export type Skill = {
   title: string;
@@ -117,6 +78,9 @@ export type Project = {
   src: string;
   screenshots: string[];
   skills: { frontend: Skill[]; backend: Skill[] };
+  /** Opening paragraph, shown in the case study's hero card. */
+  intro: React.ReactNode;
+  /** The case study's sections (CaseSection cards with SlideShow galleries). */
   content: React.ReactNode;
   github?: string;
   live: string;
@@ -138,19 +102,17 @@ const projects: Project[] = [
       ],
     },
     github: "https://github.com/Yash-Nautiyal/employeeOS_mobile.git",
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono">
-            EmployeeOS is a <HighlightSkill>Flutter</HighlightSkill> app that unifies internal
-            operations into one mobile platform. It replaces scattered tools for communication,
-            hiring, task tracking, and file management with a single, role-aware workspace.
-          </TypographyP>
-    
-          <ProjectsLinks repo={this.github} />
-    
-          <TypographyH3 className="my-4 mt-8">Tech Stack & Architecture</TypographyH3>
-          <p className="font-mono mb-2">
+    intro: (
+      <>
+        EmployeeOS is a <HighlightSkill>Flutter</HighlightSkill> app that unifies internal
+        operations into one mobile platform. It replaces scattered tools for communication,
+        hiring, task tracking, and file management with a single, role-aware workspace.
+      </>
+    ),
+    content: (
+      <>
+        <CaseSection title="Tech Stack & Architecture">
+          <p>
             Built using <HighlightSubskill>MVVM Architecture</HighlightSubskill> with modular,
             reusable components for maintainability and scale. Core engineering focus includes{" "}
             <HighlightSubskill>State Management</HighlightSubskill>,{" "}
@@ -159,16 +121,18 @@ const projects: Project[] = [
             <HighlightSubskill>Realtime Messaging</HighlightSubskill>, and{" "}
             <HighlightSubskill>Theme System Design</HighlightSubskill>.
           </p>
-    
-          <TypographyH3 className="my-4 mt-8">Problem Solved</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Problem Solved">
+          <p>
             Teams often rely on disconnected products for chat, recruitment, tasks, and files,
             causing context switching, duplicated effort, and slower decisions. EmployeeOS
             centralizes these workflows to improve operational speed and visibility.
           </p>
-    
-          <TypographyH3 className="my-4 mt-8">UI/UX</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="UI/UX">
+          <p>
             Designed a clean interface inspired by{" "}
             <HighlightSubskill>Material Design</HighlightSubskill> and productivity-first
             layouts. Implemented responsive views, reusable UI patterns, dark/light mode, and
@@ -186,9 +150,10 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/welcome_dark.jpg`,
             ]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">Hiring Dashboard</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Hiring Dashboard">
+          <p>
             Built a centralized hiring pipeline to track candidates across stages, improve
             recruiter visibility, and speed up decision-making.
           </p>
@@ -202,19 +167,21 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/hiring5.jpg`,
             ]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">Chat</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Chat">
+          <p>
             Implemented real-time, thread-based team messaging to reduce dependency on external
             tools and keep discussions aligned with internal workflows.
           </p>
           <SlideShow
             variant="mobile-multi"
-            images={[`${BASE_PATH}/employeeOS/welcome.jpg`]}
+            images={[`${BASE_PATH}/employeeOS/full/chat1.jpeg`, `${BASE_PATH}/employeeOS/full/chat2.jpeg`]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">Kanban</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Kanban">
+          <p>
             Created a collaborative task board for planning, assigning, and tracking work with
             clear workflow status across teams.
           </p>
@@ -227,9 +194,10 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/kanban4.jpg`,
             ]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">File Manager</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="File Manager">
+          <p>
             Delivered a secure shared file workspace for uploading, organizing, and accessing
             team assets with role-aware visibility.
           </p>
@@ -242,9 +210,10 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/filemanager4.jpg`,
             ]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">Recruitment</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Recruitment">
+          <p>
             Supported end-to-end recruitment workflows: posting roles, collecting applications,
             screening candidates, and managing interview/hiring stages.
           </p>
@@ -260,9 +229,10 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/interview.jpg`,
             ]}
           />
-    
-          <TypographyH3 className="my-4 mt-8">Users & Access Control</TypographyH3>
-          <p className="font-mono mb-2">
+        </CaseSection>
+
+        <CaseSection title="Users & Access Control">
+          <p>
             Implemented user lifecycle management, profile controls, and role-based permission
             handling for secure organization-level administration.
           </p>
@@ -276,9 +246,9 @@ const projects: Project[] = [
               `${BASE_PATH}/employeeOS/create_user.jpg`,
             ]}
           />
-        </div>
-      );
-    },
+        </CaseSection>
+      </>
+    ),
     live: "",
   },
   {
@@ -297,20 +267,18 @@ const projects: Project[] = [
     },
     live: "https://play.google.com/store/apps/details?id=tech.app2doo",
     github: "https://github.com/Yash-Nautiyal/2D00.git",
-    get content(): React.JSX.Element {
-      return (
-        <div>
-          <TypographyP className="font-mono">
-            2DOO is a production-grade task management app built to help users plan
-            smarter, stay focused, and never miss deadlines. It combines a clean, minimal
-            interface with powerful productivity workflows such as overdue tracking, push
-            notifications, and real-time synchronization.
-          </TypographyP>
-
-          <ProjectsLinks repo={this.github} live={this.live}/>
-
-          <TypographyH3 className="my-4">Key Features</TypographyH3>
-          <ul className="font-mono mb-2 list-disc list-inside">
+    intro: (
+      <>
+        2DOO is a production-grade task management app built to help users plan smarter, stay
+        focused, and never miss deadlines. It combines a clean, minimal interface with powerful
+        productivity workflows such as overdue tracking, push notifications, and real-time
+        synchronization.
+      </>
+    ),
+    content: (
+      <>
+        <CaseSection title="Key Features">
+          <ul>
             <li>
               Full <HighlightSubskill>CRUD</HighlightSubskill> workflows for tasks and
               subtasks
@@ -331,22 +299,22 @@ const projects: Project[] = [
               Dynamic categorization, filtering, and priority-based task organization
             </li>
           </ul>
+        </CaseSection>
 
-          <TypographyH3 className="my-4 mt-8">Architecture & Engineering</TypographyH3>
-          <p className="font-mono mb-2">
+        <CaseSection title="Architecture & Engineering">
+          <p>
             The app follows a feature-first layered architecture with{" "}
             <HighlightSubskill>BLoC</HighlightSubskill> state management and the{" "}
             <HighlightSubskill>Repository Pattern</HighlightSubskill> for clean separation
             of concerns. The codebase is organized for scalability and maintainability
             using reusable modules, explicit state transitions, and predictable data flow.
           </p>
-          <p className="font-mono mb-2">
+          <p>
             Backend capabilities are powered by{" "}
             <HighlightSubskill>Supabase Auth</HighlightSubskill> and{" "}
             <HighlightSubskill>PostgreSQL</HighlightSubskill>, including secure
             authentication, real-time updates, and reliable cloud persistence.
           </p>
-
           <SlideShow
             variant="playstore"
             images={[
@@ -357,18 +325,20 @@ const projects: Project[] = [
               `${BASE_PATH}/2doo/Samsung Galaxy S21 Ultra Screenshot 5.png`,
             ]}
           />
+        </CaseSection>
 
-          <TypographyH3 className="my-4 mt-8">UI/UX & Product Design</TypographyH3>
-          <p className="font-mono mb-2">
+        <CaseSection title="UI/UX & Product Design">
+          <p>
             Designed a modern, productivity-focused interface inspired by{" "}
             <HighlightSubskill>Material Design</HighlightSubskill>. Built modular and
             reusable UI components with responsive layouts, consistent visual language,
             and personalization features such as light/dark mode, preset color themes, and
             typography controls.
           </p>
+        </CaseSection>
 
-          <TypographyH3 className="my-4 mt-8">Delivery & Impact</TypographyH3>
-          <p className="font-mono mb-2">
+        <CaseSection title="Delivery & Impact">
+          <p>
             2DOO demonstrates complete end-to-end product ownership from architecture and
             implementation to release engineering. The app was compiled into an optimized{" "}
             <HighlightSubskill>12.3 MB</HighlightSubskill> Android App Bundle and
@@ -377,9 +347,9 @@ const projects: Project[] = [
             production-ready <HighlightSkill>Flutter</HighlightSkill> and{" "}
             <HighlightSkill>Dart</HighlightSkill> development practices.
           </p>
-        </div>
-      );
-    },
+        </CaseSection>
+      </>
+    ),
   },
   {
     id: "newsfeed",
@@ -393,51 +363,45 @@ const projects: Project[] = [
       frontend: [PROJECT_SKILLS.flutter, PROJECT_SKILLS.dart],
       backend: [PROJECT_SKILLS.firebase, PROJECT_SKILLS.mongodb],
     },
-    get content() {
-      return (
-        <div className="space-y-6">
-          <TypographyP className="font-mono text-lg leading-relaxed">
-            NewsFeed is a production-style <HighlightSkill>Flutter</HighlightSkill> and{" "}
-            <HighlightSkill>Dart</HighlightSkill> application focused on real-time news
-            consumption, category-based browsing, and fake-news verification.
-          </TypographyP>
+    intro: (
+      <>
+        NewsFeed is a production-style <HighlightSkill>Flutter</HighlightSkill> and{" "}
+        <HighlightSkill>Dart</HighlightSkill> application focused on real-time news
+        consumption, category-based browsing, and fake-news verification.
+      </>
+    ),
+    content: (
+      <>
+        <CaseSection title="Core Features">
+          <ul>
+            <li>
+              <HighlightSubskill>Fake-news detection</HighlightSubskill> for text and
+              images using external Flask ML endpoints.
+            </li>
+            <li>
+              Advanced keyword search with date-range filters and category filtering.
+            </li>
+            <li>
+              Secure <HighlightSkill>Firebase</HighlightSkill>{" "}
+              <HighlightSubskill>Authentication</HighlightSubskill> (Email/Password &
+              Google Sign-In) with{" "}
+              <HighlightSubskill>SharedPreferences</HighlightSubskill> session routing.
+            </li>
+            <li>
+              <HighlightSubskill>Cloud Firestore</HighlightSubskill> integrations for
+              personalized bookmark persistence and profile management.
+            </li>
+          </ul>
+        </CaseSection>
 
-          <ProjectsLinks repo={this.github} />
-
-          <div>
-            <TypographyH3 className="mb-3">Core Features</TypographyH3>
-            <ul className="font-mono list-disc list-inside space-y-2">
-              <li>
-                <HighlightSubskill>Fake-news detection</HighlightSubskill> for text and
-                images using external Flask ML endpoints.
-              </li>
-              <li>
-                Advanced keyword search with date-range filters and category filtering.
-              </li>
-              <li>
-                Secure <HighlightSkill>Firebase</HighlightSkill>{" "}
-                <HighlightSubskill>Authentication</HighlightSubskill> (Email/Password &
-                Google Sign-In) with{" "}
-                <HighlightSubskill>SharedPreferences</HighlightSubskill> session routing.
-              </li>
-              <li>
-                <HighlightSubskill>Cloud Firestore</HighlightSubskill> integrations for
-                personalized bookmark persistence and profile management.
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <TypographyH3 className="mb-3">Architecture & UI</TypographyH3>
-            <p className="font-mono leading-relaxed">
-              Engineered with a feature-first modular structure utilizing{" "}
-              <HighlightSubskill>BLoC</HighlightSubskill> for predictable state
-              management. The UI features a draggable and animated home layout, swipeable
-              breaking-news cards, and polished loading/error states built on{" "}
-              <HighlightSubskill>Material</HighlightSubskill> design principles.
-            </p>
-          </div>
-
+        <CaseSection title="Architecture & UI">
+          <p>
+            Engineered with a feature-first modular structure utilizing{" "}
+            <HighlightSubskill>BLoC</HighlightSubskill> for predictable state
+            management. The UI features a draggable and animated home layout, swipeable
+            breaking-news cards, and polished loading/error states built on{" "}
+            <HighlightSubskill>Material</HighlightSubskill> design principles.
+          </p>
           <SlideShow
             variant="mobile-multi"
             images={[
@@ -448,9 +412,9 @@ const projects: Project[] = [
               `${BASE_PATH}/newsfeed/detail.jpg`,
             ]}
           />
-        </div>
-      );
-    },
+        </CaseSection>
+      </>
+    ),
   },
 ];
 export default projects;

@@ -1,0 +1,428 @@
+/* Case study page. Same window, cards and tokens as the hanging-phone home (src/components/hp/home.module.css). Dark only, like home. */
+.page {
+  --card: #131313;
+  --card-2: #1b1b1b;
+  --ink: #fff;
+  --ink-2: #a3a3a3;
+  --ink-3: #6b6b6b;
+  --line: #ffffff1a;
+  --flutter: #54c5f8;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 36px 28px;
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  isolation: isolate;
+}
+.mono { font-family: var(--font-geist-mono), monospace; }
+
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(70% 60% at 0% 0%, #1e7bff 0, transparent 60%),
+    radial-gradient(60% 60% at 70% 0%, #7a3cff 0, transparent 60%),
+    radial-gradient(60% 70% at 100% 100%, #ff2d6f 0, transparent 60%),
+    radial-gradient(60% 60% at 0% 100%, #ff7a2d 0, transparent 55%),
+    #1a1030;
+}
+
+/* ---------- window ---------- */
+.win {
+  position: relative;
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  background: #000;
+  border-radius: 26px;
+  padding: 8px 10px 10px;
+  display: grid;
+  grid-template-rows: 44px auto;
+  gap: 6px;
+  box-shadow: 0 50px 120px -30px #000d, 0 0 0 1px #ffffff12;
+  /* clip, not hidden: hidden would make the window the scroll container and break the sticky aside */
+  overflow: clip;
+  animation: winIn 0.9s var(--ease) both;
+}
+@keyframes winIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--ink-2);
+  min-width: 0;
+}
+.lights { display: flex; gap: 7px; margin-right: 10px; flex: none; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; }
+.lights i:nth-child(3) { background: #28c840; }
+.path { font-family: var(--font-geist-mono), monospace; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spacer { flex: 1; }
+.tool {
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 9px;
+  background: #161616;
+  border: 1px solid #ffffff12;
+  color: #ddd;
+  font: inherit;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.tool:hover { background: #222; border-color: #ffffff26; }
+.tool:active { transform: scale(0.96); }
+.tool:focus-visible, .btnMain:focus-visible, .btnAlt:focus-visible, .navBtn:focus-visible, .buildRow:focus-visible {
+  outline: 2px solid var(--flutter);
+  outline-offset: 2px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.aside {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  scrollbar-width: none;
+  border-radius: 18px;
+}
+.main { display: flex; flex-direction: column; gap: 10px; min-width: 0; counter-reset: sec; }
+
+/* ---------- cards ---------- */
+.card {
+  position: relative;
+  background: var(--card);
+  border-radius: 18px;
+  overflow: hidden;
+  animation: cardIn 0.8s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+}
+
+.hero { padding: 22px; display: flex; flex-direction: column; }
+/* The build's colour glows in from the corner, like the phone stage's light. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(90% 60% at 100% 0%, var(--app, var(--flutter)), transparent 65%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.hero > * { position: relative; }
+.handle { font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.handle i { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 3px #3ddc8426; }
+.title {
+  margin-top: 14px;
+  font-size: clamp(36px, 3.4vw, 52px);
+  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  overflow-wrap: break-word;
+}
+.lead { margin-top: 18px; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+
+.cta { display: flex; gap: 10px; margin-top: 22px; }
+.btnMain, .btnAlt {
+  height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: transform 0.2s var(--ease), background 0.2s;
+}
+.btnMain { flex: 1; background: #fff; color: #000; }
+.btnAlt { width: 100px; flex: none; background: #262626; color: #fff; }
+.btnMain:hover, .btnAlt:hover { transform: translateY(-2px); }
+.btnAlt:hover { background: #333; }
+.btnMain svg, .btnAlt svg { width: 17px; height: 17px; }
+
+.stack { padding: 18px 22px 22px; display: grid; gap: 16px; }
+.stack h2, .more h2 { font-size: 15px; font-weight: 600; }
+.stackGroup h3 { font-size: 12px; font-weight: 500; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding: 0; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #ffffff24;
+  color: #e5e5e5;
+}
+.chip svg { width: 13px; height: 13px; opacity: 0.85; }
+.chipFlutter { border-color: #54c5f8aa; color: var(--flutter); }
+
+/* ---------- sections ---------- */
+.section { padding: 24px 24px 22px; }
+.section h2 {
+  counter-increment: sec;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.section h2::before {
+  content: counter(sec, decimal-leading-zero);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+.section p, .section ul { margin-top: 12px; max-width: 70ch; font-size: 15px; line-height: 1.65; color: var(--ink-2); }
+.section ul { list-style: none; padding: 0; display: grid; gap: 8px; }
+.section li { position: relative; padding-left: 20px; }
+.section li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--app, var(--flutter));
+}
+.skill { color: var(--flutter); font-weight: 600; }
+.sub { color: #fff; font-weight: 500; }
+
+/* ---------- gallery: a strip of the phone stage ---------- */
+.gallery {
+  position: relative;
+  margin: 20px -12px 0;
+  border-radius: 14px;
+  background: #0d0d0d;
+  overflow: hidden;
+}
+.gallery::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 70% at 15% 0%, var(--app, var(--flutter)), transparent 60%),
+    radial-gradient(circle, #ffffff26 1px, transparent 1.6px) center 12px / 36px 36px;
+  opacity: 0.28;
+  pointer-events: none;
+}
+.track {
+  position: relative;
+  display: flex;
+  gap: 18px;
+  padding: 28px 24px 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 24px;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.track::-webkit-scrollbar { display: none; }
+.track:focus-visible { outline: 2px solid var(--flutter); outline-offset: -2px; border-radius: 14px; }
+/* auto margins centre a short row without clipping a long one */
+.shot:first-child { margin-left: auto; }
+.shot:last-child { margin-right: auto; }
+.shot {
+  --pw: clamp(138px, 40vw, 188px);
+  flex: none;
+  scroll-snap-align: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: calc(var(--pw) * 0.14);
+  transition: transform 0.35s var(--ease);
+}
+.shot:hover { transform: translateY(-6px) rotate(-1.2deg); }
+.shot:focus-visible { outline: 2px solid var(--flutter); outline-offset: 4px; }
+
+/* phone: proportions follow the hanging phone (screen radius ≈ 0.13 × width) */
+.phone {
+  position: relative;
+  display: block;
+  width: var(--pw);
+  aspect-ratio: 9 / 19.5;
+  padding: calc(var(--pw) * 0.035);
+  border-radius: calc(var(--pw) * 0.15);
+  background: linear-gradient(155deg, #4a505c, #1b1d22 38%, #0c0d10);
+  box-shadow: inset 0 0 0 1px #ffffff2a, 0 22px 36px -16px #000e, 0 0 0 1px #000;
+}
+.phone::before, .phone::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: #2b2e35;
+  left: 100%;
+}
+.phone::before { top: 20%; height: 9%; }
+.phone::after { top: 32%; height: 15%; }
+.screen {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: calc(var(--pw) * 0.12);
+  overflow: hidden;
+  background: #000;
+}
+.screen img { object-fit: cover; object-position: top; }
+.screen::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--pw) * 0.035);
+  left: 50%;
+  width: calc(var(--pw) * 0.06);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #050505;
+  box-shadow: 0 0 0 1.5px #ffffff14;
+}
+
+/* store graphics already include a device, so they get a plain tile */
+.tile {
+  position: relative;
+  display: block;
+  width: clamp(150px, 46vw, 220px);
+  aspect-ratio: 9 / 16;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1b1b1b;
+  box-shadow: 0 0 0 1px #ffffff14, 0 22px 36px -18px #000e;
+}
+.tile img { object-fit: cover; }
+.tileWide { width: min(620px, 78vw); aspect-ratio: 16 / 10; }
+.tileWide img { object-fit: contain; }
+.tile, .tileWide { scroll-snap-align: start; }
+
+.galleryBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 14px 24px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.galleryBar span { flex: 1; }
+.navBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #1b1b1b;
+  border: 1px solid #ffffff1a;
+  color: #ddd;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s, transform 0.15s;
+}
+.navBtn:hover:not(:disabled) { background: #2a2a2a; }
+.navBtn:active:not(:disabled) { transform: scale(0.94); }
+.navBtn:disabled { opacity: 0.35; cursor: default; }
+
+/* ---------- zoom ---------- */
+.zoom {
+  margin: auto;
+  max-width: 100vw;
+  max-height: 100dvh;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  overflow: visible;
+}
+.zoom::backdrop { background: #000c; backdrop-filter: blur(6px); }
+.zoom[open] { animation: zoomIn 0.3s var(--ease, ease) both; }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.96); } }
+.zoomBody { display: grid; justify-items: center; gap: 12px; padding: 12px; font-family: var(--font-geist-sans), system-ui, sans-serif; }
+.zoomImg { width: auto; height: auto; max-width: calc(100vw - 24px); max-height: calc(100dvh - 90px); border-radius: 18px; object-fit: contain; }
+.zoomBar { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #a3a3a3; }
+.zoomBar span { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* ---------- more builds ---------- */
+.more { padding: 16px 12px 10px; }
+.more h2 { padding: 0 8px 6px; }
+.more ul { list-style: none; padding: 0; display: grid; }
+.buildRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 12px;
+  transition: background 0.25s;
+}
+.buildRow:hover { background: #ffffff0f; }
+.buildRow b { display: block; font-size: 14.5px; font-weight: 600; }
+.buildRow small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--ink-2); }
+.buildThumb { flex: none; width: 42px; height: 42px; border-radius: 11px; object-fit: cover; background: #222; }
+.runChip {
+  margin-left: auto;
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffffff12;
+  color: #ddd;
+}
+
+/* ---------- loading / not found ---------- */
+.status { padding: 28px 24px; display: grid; gap: 14px; justify-items: start; }
+.status h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.03em; }
+.status p { color: var(--ink-2); font-size: 14.5px; }
+.term { font-family: var(--font-geist-mono), monospace; font-size: 13px; color: var(--ink-2); }
+.term b { color: var(--flutter); font-weight: 500; }
+.cursor { display: inline-block; width: 8px; height: 1em; vertical-align: -2px; background: #ddd; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width: 1080px) {
+  .grid { grid-template-columns: 1fr; }
+  .aside { position: static; max-height: none; overflow: visible; display: grid; grid-template-columns: 1.3fr 1fr; }
+  .toolbar .tool span { display: none; }
+}
+@media (max-width: 760px) {
+  .aside { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page { padding: 16px; }
+  .win { border-radius: 22px; padding: 6px 6px 6px; }
+  .path { display: none; }
+  .hero, .section { padding: 20px 18px; }
+  .stack { padding: 18px; }
+  .gallery { margin-inline: -10px; }
+  .track { padding: 22px 16px 14px; gap: 14px; scroll-padding-inline: 16px; }
+  .galleryBar { padding-left: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win, .card, .zoom[open], .cursor { animation: none !important; }
+  .shot, .btnMain, .btnAlt { transition: none; }
+  .shot:hover { transform: none; }
+}

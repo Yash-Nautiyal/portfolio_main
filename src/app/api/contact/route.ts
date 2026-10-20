@@ -3,8 +3,6 @@ import { config } from "@/data/config";
 import { Resend } from "resend";
 import { z } from "zod";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
@@ -56,6 +54,8 @@ export async function POST(req: Request) {
     const fromEmail = process.env.CONTACT_FROM_EMAIL || "Portfolio <onboarding@resend.dev>";
     const toEmail = process.env.CONTACT_TO_EMAIL || config.email;
 
+    // Created per request, not at import: `next build` loads this module without the key.
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { data: resendData, error: resendError } = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],

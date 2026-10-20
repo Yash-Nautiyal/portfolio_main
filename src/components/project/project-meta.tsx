@@ -1,35 +1,49 @@
+import { SiGithub, SiGoogleplay } from "react-icons/si";
 import type { Project } from "@/data/projects";
-import { Card } from "@/components/ui/card";
 import { TechStackList } from "./tech-stack-list";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import s from "./case-study.module.css";
+
+const ext = { target: "_blank", rel: "noopener noreferrer" };
+
+/** Hero card: category, title, intro and the store / source buttons (the home's IntroCard + CtaCard). */
+export function ProjectHero({ project }: { project: Project }) {
+  return (
+    <section className={`${s.card} ${s.hero}`} style={{ "--i": 0 } as React.CSSProperties}>
+      <span className={s.handle}>
+        <i aria-hidden /> Case study · {project.category}
+      </span>
+      <h1 className={s.title}>{project.title}</h1>
+      <p className={s.lead}>{project.intro}</p>
+      {(project.live || project.github) && (
+        <div className={s.cta}>
+          {project.live ? (
+            <>
+              <a className={s.btnMain} href={project.live} {...ext}>
+                <SiGoogleplay aria-hidden /> Google Play
+              </a>
+              {project.github && (
+                <a className={s.btnAlt} href={project.github} {...ext} aria-label="Source on GitHub">
+                  <SiGithub aria-hidden />
+                </a>
+              )}
+            </>
+          ) : (
+            <a className={s.btnMain} href={project.github} {...ext}>
+              <SiGithub aria-hidden /> Source on GitHub
+            </a>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
 
 export function ProjectMeta({ project }: { project: Project }) {
   return (
-    <Card className="sticky top-24">
-      <p className="text-xs uppercase tracking-wide text-sky-500">{project.category}</p>
-      <h3 className="mt-2 text-xl font-semibold text-foreground">{project.title}</h3>
-      <div className="mt-5 space-y-4">
-        <TechStackList title="Frontend" skills={project.skills.frontend} />
-        <TechStackList title="Backend" skills={project.skills.backend} />
-      </div>
-      <div className="mt-5 flex gap-2">
-        {project.github ? (
-          <a href={project.github} target="_blank" rel="noreferrer">
-            <Button size="sm">GitHub</Button>
-          </a>
-        ) : null}
-        {project.live ? (
-          <a href={project.live} target="_blank" rel="noreferrer">
-            <Image
-              src={"https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png"}
-              alt="Get it on Google Play"
-              width={120}
-              height={120}
-            />
-          </a>
-        ) : null}
-      </div>
-    </Card>
+    <section className={`${s.card} ${s.stack}`} style={{ "--i": 1 } as React.CSSProperties}>
+      <h2>Tech stack</h2>
+      <TechStackList title="Frontend" skills={project.skills.frontend} />
+      <TechStackList title="Backend" skills={project.skills.backend} />
+    </section>
   );
 }

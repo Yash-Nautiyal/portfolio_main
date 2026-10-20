@@ -1,19 +1,26 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import s from "./case-study.module.css";
 
+/** Goes back to where the visitor came from on this site (the phone), else home. */
 export function ProjectBackButton() {
   const router = useRouter();
 
   return (
-    <button
-      type="button"
-      onClick={() => router.back()}
-      className="mb-6 inline-flex items-center gap-2 rounded-xl border border-(--glass-border) bg-(--surface) px-3 py-2 text-sm font-medium text-foreground transition hover:bg-(--surface-hover) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--accent)"
+    <Link
+      href="/"
+      className={s.tool}
+      onClick={(e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        if (!document.referrer.startsWith(location.origin) || history.length < 2) return;
+        e.preventDefault();
+        router.back();
+      }}
     >
-      <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
-      Back
-    </button>
+      <ArrowLeft size={13} aria-hidden /> <span>Back</span>
+    </Link>
   );
 }

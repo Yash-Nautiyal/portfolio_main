@@ -1,0 +1,321 @@
+/* ════════════════════════════════════════════════════════════════
+   liquid-glass.css — specular + material layers for LiquidGlassSurface
+   The refraction itself lives in the SVG filter (backdrop-filter).
+   These layers add what refraction alone can't: rim light, tint,
+   inner shadow, and the activation glint.
+   ════════════════════════════════════════════════════════════════ */
+@layer components {
+  .lg-shell {
+    isolation: isolate;
+    overflow: hidden;
+    box-shadow:
+      0 12px 40px rgba(15, 23, 42, 0.1),
+      0 2px 8px rgba(15, 23, 42, 0.05),
+      0 0 0 0.5px color-mix(in oklab, var(--foreground) 8%, transparent);
+    transition:
+      box-shadow 0.35s ease,
+      background 0.35s ease;
+  }
+
+  .dark .lg-shell {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.45),
+      0 2px 8px rgba(0, 0, 0, 0.25),
+      0 0 0 0.5px var(--glass-border);
+  }
+
+  .lg-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .lg-refract .lg-tint {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      155deg,
+      color-mix(in oklab, var(--nav-bg) 55%, rgba(255, 255, 255, 0.35)) 0%,
+      color-mix(in oklab, var(--nav-bg) 80%, transparent) 40%,
+      color-mix(in oklab, var(--background) 12%, transparent) 64%,
+      color-mix(in oklab, var(--nav-bg) 50%, rgba(255, 255, 255, 0.2)) 100%
+    );
+    transition: background 0.35s ease;
+  }
+
+  .dark .lg-refract .lg-tint {
+    background: linear-gradient(
+      155deg,
+      color-mix(in oklab, var(--nav-bg) 70%, rgba(255, 255, 255, 0.08)) 0%,
+      color-mix(in oklab, var(--nav-bg) 90%, transparent) 42%,
+      color-mix(in oklab, var(--background) 25%, transparent) 68%,
+      color-mix(in oklab, var(--nav-bg) 65%, rgba(255, 255, 255, 0.06)) 100%
+    );
+  }
+
+  .lg-edge {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 1.5px 1px rgba(255, 255, 255, 0.75),
+      inset 1px 0 1px rgba(255, 255, 255, 0.35),
+      inset -1px 0 1px rgba(255, 255, 255, 0.35),
+      inset 0 -1px 1.5px rgba(255, 255, 255, 0.25),
+      inset 0 -3px 6px rgba(15, 23, 42, 0.06),
+      inset 0 0 0 1px var(--glass-border);
+    transition: box-shadow 0.35s ease;
+  }
+
+  .dark .lg-edge {
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.12),
+      inset 1px 0 1px rgba(255, 255, 255, 0.06),
+      inset -1px 0 1px rgba(255, 255, 255, 0.06),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.05),
+      inset 0 -4px 10px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px var(--glass-border);
+  }
+
+  .lg-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .lg-sheen::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    bottom: -40%;
+    left: -30%;
+    width: 36%;
+    transform: translateX(-160%) rotate(16deg);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 18%,
+      rgba(255, 255, 255, 0.45) 46%,
+      rgba(255, 248, 238, 0.55) 52%,
+      rgba(255, 255, 255, 0.4) 58%,
+      transparent 100%
+    );
+    mix-blend-mode: screen;
+    filter: blur(2px);
+    transition: opacity 0.35s ease;
+  }
+
+  .dark .lg-sheen::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 18%,
+      rgba(255, 255, 255, 0.18) 46%,
+      rgba(200, 220, 255, 0.22) 52%,
+      rgba(255, 255, 255, 0.14) 58%,
+      transparent 100%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  .lg-pop .lg-sheen::before {
+    animation: lg-glint 0.85s cubic-bezier(0.3, 0, 0.2, 1) 0.1s both;
+  }
+
+  @keyframes lg-glint {
+    from {
+      transform: translateX(-160%) rotate(16deg);
+    }
+    to {
+      transform: translateX(880%) rotate(16deg);
+    }
+  }
+
+  .lg-pop {
+    animation: lg-pop 0.62s cubic-bezier(0.34, 1.42, 0.54, 1) both;
+  }
+
+  @keyframes lg-pop {
+    0% {
+      transform: scale(0.86, 1.08);
+    }
+    38% {
+      transform: scale(1.045, 0.965);
+    }
+    68% {
+      transform: scale(0.992, 1.012);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+
+  .lg-fallback {
+    background: linear-gradient(
+      148deg,
+      color-mix(in oklab, var(--nav-bg) 40%, rgba(255, 255, 255, 0.72)) 0%,
+      color-mix(in oklab, var(--nav-bg) 70%, rgba(255, 255, 255, 0.28)) 40%,
+      color-mix(in oklab, var(--background) 8%, rgba(255, 255, 255, 0.22)) 60%,
+      color-mix(in oklab, var(--nav-bg) 45%, rgba(255, 255, 255, 0.55)) 100%
+    );
+    backdrop-filter: blur(26px) saturate(1.85) brightness(1.05);
+    -webkit-backdrop-filter: blur(26px) saturate(1.85) brightness(1.05);
+    transition: background 0.35s ease;
+  }
+
+  .dark .lg-fallback {
+    background: linear-gradient(
+      148deg,
+      color-mix(in oklab, var(--nav-bg) 55%, rgba(255, 255, 255, 0.06)) 0%,
+      color-mix(in oklab, var(--nav-bg) 85%, rgba(9, 9, 11, 0.5)) 45%,
+      color-mix(in oklab, var(--background) 30%, rgba(9, 9, 11, 0.65)) 62%,
+      color-mix(in oklab, var(--nav-bg) 60%, rgba(255, 255, 255, 0.05)) 100%
+    );
+    backdrop-filter: blur(26px) saturate(1.4) brightness(0.92);
+    -webkit-backdrop-filter: blur(26px) saturate(1.4) brightness(0.92);
+  }
+
+  .lg-fallback .lg-tint {
+    display: none;
+  }
+
+  .lg-nav-host {
+    perspective: 1100px;
+    perspective-origin: 50% 0%;
+  }
+
+  .lg-nav-pluck {
+    transform-origin: 50% 0%;
+    transform-style: preserve-3d;
+    will-change: transform, filter, opacity;
+  }
+
+  .lg-nav-host[data-phase="hidden"] .lg-nav-pluck {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, -10px, -48px) rotateX(78deg) scale3d(1.16, 0.08, 1);
+    filter: blur(8px);
+  }
+
+  .lg-nav-host[data-phase="shown"] .lg-nav-pluck {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    filter: none;
+  }
+
+  .lg-nav-pluck-in {
+    animation: lg-nav-pluck-in 0.78s cubic-bezier(0.22, 1.38, 0.28, 1) both;
+  }
+
+  .lg-nav-pluck-out {
+    animation: lg-nav-pluck-out 0.52s cubic-bezier(0.5, 0.08, 0.65, 0.9) both;
+  }
+
+  @keyframes lg-nav-pluck-in {
+    0% {
+      opacity: 0.25;
+      transform: translate3d(0, -8px, -56px) rotateX(82deg) scale3d(1.18, 0.1, 1);
+      filter: blur(10px);
+    }
+    28% {
+      opacity: 1;
+      transform: translate3d(0, 14px, 18px) rotateX(-16deg) scale3d(0.92, 1.22, 1);
+      filter: blur(0);
+    }
+    52% {
+      transform: translate3d(0, -7px, 6px) rotateX(8deg) scale3d(1.05, 0.9, 1);
+    }
+    74% {
+      transform: translate3d(0, 3px, 0) rotateX(-3deg) scale3d(0.985, 1.03, 1);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  @keyframes lg-nav-pluck-out {
+    0% {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+    32% {
+      opacity: 1;
+      transform: translate3d(0, 10px, 8px) rotateX(-10deg) scale3d(0.94, 1.16, 1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(0, -10px, -48px) rotateX(78deg) scale3d(1.16, 0.08, 1);
+      filter: blur(8px);
+    }
+  }
+
+  @keyframes lg-nav-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes lg-nav-fade-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lg-pop {
+      animation: none;
+    }
+    .lg-pop .lg-sheen::before {
+      animation: none;
+    }
+    .lg-nav-pluck-in {
+      animation: lg-nav-fade-in 0.2s ease both;
+    }
+    .lg-nav-pluck-out {
+      animation: lg-nav-fade-out 0.2s ease both;
+    }
+    .lg-nav-host[data-phase="hidden"] .lg-nav-pluck {
+      transform: translateY(-12px);
+      filter: none;
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .lg-refract,
+    .lg-fallback {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: color-mix(in oklab, var(--background) 94%, var(--foreground));
+    }
+
+    .dark .lg-refract,
+    .dark .lg-fallback {
+      background: color-mix(in oklab, var(--background) 96%, var(--foreground));
+    }
+
+    .lg-refract .lg-tint {
+      display: none;
+    }
+  }
+}

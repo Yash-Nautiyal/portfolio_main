@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { config } from "@/data/config";
 import { GlobalBlobs } from "@/components/layout/global-blobs";
 
-const jakartaSans = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
@@ -47,7 +47,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${jakartaSans.variable} ${mono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-100">
         <script
