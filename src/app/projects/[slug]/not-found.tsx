@@ -1,15 +1,20 @@
 import Link from "next/link";
+import { CaseWindow } from "@/components/project/case-window";
+import s from "@/components/project/case-study.module.css";
 
 export default function ProjectNotFound() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16">
-      <h1 className="text-2xl font-bold">Project not found</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        The requested project does not exist or has been removed.
-      </p>
-      <Link href="/projects" className="mt-6 inline-block text-sm font-semibold text-sky-500">
-        Back to projects
-      </Link>
-    </main>
+    <CaseWindow path="yash_nautiyal / lib / builds / ?">
+      <div className={`${s.card} ${s.status}`}>
+        <p className={s.term}>
+          <b>Error:</b> No build found for this route.
+        </p>
+        <h1>Project not found</h1>
+        <p>The requested project does not exist or has been removed.</p>
+        <Link href="/" className={s.btnMain} style={{ flex: "none", padding: "0 26px" }}>
+          Back to the phone
+        </Link>
+      </div>
+    </CaseWindow>
   );
 }

@@ -117,19 +117,31 @@ export type Experience = {
   highlights?: string[]; // keywords to accent in description bullets
 };
 
+// Source: CV (Jake_s_Resume__Anonymous_-3.pdf, Oct 2026). Newest job first.
 export const EXPERIENCE: Experience[] = [
+  {
+    id: 2,
+    startDate: "Jul 2026",
+    endDate: "Present",
+    title: "Flutter Developer",
+    company: "AppX",
+    description: [
+      "Built production-grade Flutter app within a week, following Clean Architecture and BLoC for maintainability and testability.",
+      "Worked on revamping company’s legacy app framework UI which is currently implemented in 500+ clients apps each having 1L+ users.",
+    ],
+    skills: [SkillNames.FLUTTER, SkillNames.DART, SkillNames.ANDROIDSTUDIO, SkillNames.GIT],
+    highlights: ["Flutter", "Clean Architecture", "BLoC", "500+", "1L+"],
+  },
   {
     id: 1,
     startDate: "Jan 2025",
-    endDate: "Present",
-    title: "Software Developer",
+    endDate: "Jul 2026",
+    title: "Flutter Developer",
     company: "F13 Technologies",
     description: [
-      "Build a task management app with FCM and Firebase Cloud Functions for real-time notifications to boost productivity upto ~70%.",
-      "Developed a unified enterprise ecosystem from scratch, reducing depency on external services and saving ~$3.2K/year.",
-      "Used Bloc and Provider for state management, and Riverpod for dependency injection to ensure clean and maintainable code.",
-      "Optimized app perfomance by implementing data-caching strategies, integrating real-time sockets with lazy loading.",
-      "Managed the end-to-end lifecycle of B2B applications, from REST API integration to Supabase/Firebase backend setup.",
+      "Architected 2 production-grade mobile applications used by 30+ users and organisation member using Flutter and Dart, implementing Clean Architecture and BLoC for maintainability and testability.",
+      "Optimized application performance by implementing lazy loading and efficient state management, resulting in a 35% reduction in memory usage and smoother UI rendering at 60 FPS.",
+      "Integrated Firebase Cloud Messaging (FCM) and automated authentication flows, increasing user engagement metrics by 40% through timely, context-aware notifications.",
     ],
     skills: [
       SkillNames.DART,
@@ -143,19 +155,16 @@ export const EXPERIENCE: Experience[] = [
       SkillNames.ANDROID,
     ],
     highlights: [
-      "~70%",
-      "~$3.2K/year",
-      "FCM",
-      "Firebase Cloud Functions",
-      "Bloc",
-      "Provider",
-      "Riverpod",
-      "real-time",
-      "B2B",
-      "REST API",
-      "Supabase",
-      "Firebase",
+      "Flutter",
+      "Dart",
+      "Clean Architecture",
+      "BLoC",
+      "30+",
       "lazy loading",
+      "35%",
+      "60 FPS",
+      "Firebase Cloud Messaging (FCM)",
+      "40%",
     ],
   },
 ];
