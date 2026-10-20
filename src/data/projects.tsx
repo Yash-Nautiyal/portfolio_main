@@ -176,7 +176,7 @@ const projects: Project[] = [
           </p>
           <SlideShow
             variant="mobile-multi"
-            images={[`${BASE_PATH}/employeeOS/welcome.jpg`]}
+            images={[`${BASE_PATH}/employeeOS/full/chat1.jpeg`, `${BASE_PATH}/employeeOS/full/chat2.jpeg`]}
           />
         </CaseSection>
 

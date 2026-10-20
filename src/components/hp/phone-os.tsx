@@ -128,7 +128,7 @@ function HomeScreen() {
 }
 
 /** A screenshot at full width with its tap areas on top (positions are % of the image). */
-function Shot({ src, alt, taps, onTap, priority }: { src: string; alt: string; taps?: Tap[]; onTap: (to: string) => void; priority?: boolean }) {
+function Shot({ src, alt, taps, onTap, priority }: { src: string; alt: string; taps?: Tap[]; onTap: (to: string, replace?: boolean) => void; priority?: boolean }) {
   return (
     <div className={s.shot}>
       {/* intrinsic size is only a placeholder ratio: height follows the real image */}
@@ -140,7 +140,7 @@ function Shot({ src, alt, taps, onTap, priority }: { src: string; alt: string; t
           className={s.tap}
           aria-label={t.label}
           style={{ left: `${t.at[0]}%`, top: `${t.at[1]}%`, width: `${t.at[2]}%`, height: `${t.at[3]}%` }}
-          onClick={() => onTap(t.to)}
+          onClick={() => onTap(t.to, t.replace)}
         />
       ))}
     </div>
@@ -148,7 +148,7 @@ function Shot({ src, alt, taps, onTap, priority }: { src: string; alt: string; t
 }
 
 /** `stack`: screens opened by a tap, over the swipe row; the last one is showing. `open("back")` closes it. */
-function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (to: string) => void }) {
+function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (to: string, replace?: boolean) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   // Mouse drag: sideways turns the page, up/down scrolls the picture under the pointer.
@@ -170,7 +170,7 @@ function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (t
     drag.current = null;
     if (!d) return;
     const el = e.currentTarget;
-    const moved = d.axis === "x" ? e.clientX - d.x : 0;
+    const moved = d.axis === "x" && !build.noSwipe ? e.clientX - d.x : 0;
     const w = el.clientWidth;
     const base = Math.round(d.left / w);
     const target = Math.max(0, Math.min(count - 1, Math.abs(moved) > w * 0.15 ? base - Math.sign(moved) : base));
@@ -199,6 +199,7 @@ function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (t
         ref={ref}
         inert={!!top}
         className={s.pager}
+        data-locked={build.noSwipe || undefined}
         data-dragging={dragging || undefined}
         tabIndex={0}
         aria-label={`${build.title} screenshots`}
@@ -207,6 +208,7 @@ function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (t
           setIndex(Math.round(el.scrollLeft / el.clientWidth));
         }}
         onKeyDown={(e) => {
+          if (build.noSwipe) return;
           if (e.key === "ArrowRight") goTo(index + 1);
           if (e.key === "ArrowLeft") goTo(index - 1);
         }}
@@ -225,7 +227,7 @@ function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (t
           const dy = e.clientY - d.y;
           // Lock to the first clear direction so a scroll doesn't nudge the page sideways.
           if (!d.axis && Math.max(Math.abs(dx), Math.abs(dy)) > 6) d.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
-          if (d.axis === "x") e.currentTarget.scrollLeft = d.left - dx;
+          if (d.axis === "x" && !build.noSwipe) e.currentTarget.scrollLeft = d.left - dx;
           else if (d.axis === "y" && d.slide) d.slide.scrollTop = d.top - dy;
         }}
         onPointerUp={endDrag}
@@ -272,7 +274,8 @@ function Pager({ build, stack, open }: { build: Build; stack: string[]; open: (t
 function AppScreen({ build }: { build: Build }) {
   const [splash, setSplash] = useState(true);
   const [stack, setStack] = useState<string[]>([]);
-  const open = (to: string) => setStack((st) => (to === "back" ? st.slice(0, -1) : [...st, to]));
+  const open = (to: string, replace?: boolean) =>
+    setStack((st) => (to === "back" ? st.slice(0, -1) : replace ? [...st.slice(0, -1), to] : [...st, to]));
   useEffect(() => {
     const id = setTimeout(() => setSplash(false), 750);
     return () => clearTimeout(id);

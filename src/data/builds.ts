@@ -6,7 +6,12 @@ const full = (f: string) => `${P}/employeeOS/full/${f}.jpeg`; // long, scrollabl
 const doo = (f: string) => `${P}/2doo/full/${f}.jpeg`;
 
 /** A tap area on a screenshot: [x, y, w, h] in % of the image; `to` opens that screenshot, or "back" closes it. */
-export type Tap = { label: string; at: [number, number, number, number]; to: string };
+export type Tap = {
+  label: string;
+  at: [number, number, number, number];
+  to: string;
+  replace?: true; // swap the open screen instead of stacking (a menu section opening or closing in place)
+};
 
 /**
  * EmployeeOS's app bar (menu, settings, account) on a screenshot of `w`×`h` px. The bar scales with the
@@ -16,7 +21,7 @@ const bar = (w: number, h: number, cy = 0.077): Tap[] => {
   const y = ((cy - 0.045) * w * 100) / h;
   const bh = (0.09 * w * 100) / h;
   return [
-    { label: "Open menu", at: [2, y, 12, bh], to: eos("nav") },
+    { label: "Open menu", at: [2, y, 12, bh], to: full("nav") },
     { label: "Settings", at: [78.5, y, 9.5, bh], to: eos("settings") },
     { label: "Account", at: [88, y, 11.5, bh], to: full("user_profile") },
   ];
@@ -31,6 +36,20 @@ const dooBar = (w: number, h: number): Tap[] => {
     { label: "All tasks", at: [66.5, y, 9, bh], to: doo("alltask_dashboard") },
   ];
 };
+
+// EmployeeOS's side menu: rows above the collapsible sections sit at the same heights in all three menu
+// images (collapsed, Recruitment open, User Management open); tapping beside the drawer closes it.
+const NAV = full("nav");
+const NAV_REC = full("nav_rec_open");
+const NAV_USER = full("nav_user_open");
+const NAV_COMMON: Tap[] = [
+  { label: "User", at: [4, 13, 67, 7], to: full("dashboard") }, // the overview item is the dashboard
+  { label: "Hirings", at: [4, 20.5, 67, 6.5], to: full("hiring") },
+  { label: "Kanban", at: [4, 32.5, 67, 7], to: eos("kanban1") },
+  { label: "Chat", at: [4, 40, 67, 6.5], to: full("chat1") },
+  { label: "File Manager", at: [4, 47, 67, 7], to: full("filemanager") },
+  { label: "Close menu", at: [75, 0, 25, 100], to: "back" },
+];
 
 const META: Record<
   string,
@@ -47,6 +66,7 @@ const META: Record<
     logoScale?: number;
     store?: string[];
     hideDots?: true;
+    noSwipe?: true;
   }
 > = {
   employeeOS: {
@@ -54,6 +74,7 @@ const META: Record<
     color: "#5b6cff",
     short: "EOS",
     hideDots: true,
+    noSwipe: true,
     logoBg: "#fff",
     logoScale: 0.84,
     surface: "#fdfefd", // the screenshots' page colour, behind the status bar and home bar
@@ -79,10 +100,12 @@ const META: Record<
         { label: "Sign in", at: [4, 50.5, 92, 7.5], to: full("dashboard") },
       ],
       [full("dashboard")]: bar(324, 1598),
-      [full("hiring")]: bar(302, 1421),
+      [full("hiring")]: [...bar(302, 1421), { label: "Interview progress", at: [51, 67.6, 35, 2.1], to: full("interview_scheduling") }],
       [full("job_posting")]: [
         ...bar(338, 1599),
         { label: "Add posting", at: [61.5, 4.7, 34, 2.4], to: full("add_job_posting") },
+        // each card's "N applications" link
+        ...[24.9, 45.6, 66.2, 86.9].map((y): Tap => ({ label: "Applications", at: [37, y, 42, 1.8], to: full("job_application") })),
       ],
       [full("add_job_posting")]: [...bar(282, 1602), { label: "Back", at: [3, 3.3, 10, 1.8], to: "back" }],
       [full("job_application")]: bar(386, 1598),
@@ -93,15 +116,25 @@ const META: Record<
       [full("filemanager")]: bar(434, 1602),
       [full("user_profile")]: bar(666, 1601),
       [full("user_account")]: bar(462, 1601),
-      [eos("nav")]: [
-        { label: "User", at: [4, 13, 67, 7], to: full("user_profile") },
-        { label: "Hirings", at: [4, 20.5, 67, 6.5], to: full("hiring") },
-        { label: "Kanban", at: [4, 32.5, 67, 7], to: eos("kanban1") },
-        { label: "Chat", at: [4, 40, 67, 6.5], to: full("chat1") },
-        { label: "File Manager", at: [4, 47, 67, 7], to: full("filemanager") },
-        { label: "Recruitment", at: [4, 54.5, 67, 6.5], to: full("job_posting") },
-        { label: "User Management", at: [4, 62.5, 67, 8], to: full("user_account") },
-        { label: "Close menu", at: [75, 0, 25, 100], to: "back" },
+      [NAV]: [
+        ...NAV_COMMON,
+        { label: "Recruitment", at: [4, 55.3, 67, 5.2], to: NAV_REC, replace: true },
+        { label: "User Management", at: [4, 62, 67, 9], to: NAV_USER, replace: true },
+      ],
+      [NAV_REC]: [
+        ...NAV_COMMON,
+        { label: "Recruitment", at: [4, 54.8, 67, 6.2], to: NAV, replace: true }, // collapse
+        { label: "Job Posting", at: [13, 62.6, 58, 4], to: full("job_posting") },
+        { label: "Job Application", at: [13, 68.9, 58, 4], to: full("job_application") },
+        { label: "Interview Scheduling", at: [13, 75, 58, 4], to: full("interview_scheduling") },
+        { label: "User Management", at: [4, 81, 67, 8], to: NAV_USER, replace: true },
+      ],
+      [NAV_USER]: [
+        ...NAV_COMMON,
+        { label: "Recruitment", at: [4, 55.3, 67, 5.2], to: NAV_REC, replace: true },
+        { label: "User Management", at: [4, 62, 67, 9], to: NAV, replace: true }, // collapse
+        { label: "Account", at: [13, 72.6, 58, 4], to: full("user_account") },
+        { label: "Profile", at: [13, 79, 58, 4], to: full("user_profile") },
       ],
       [eos("settings")]: [
         { label: "Close settings", at: [84, 1, 13, 6], to: "back" },
@@ -114,6 +147,7 @@ const META: Record<
     color: "#f0a43a",
     short: "2DO",
     hideDots: true,
+    noSwipe: true,
     logoBg: "#fff",
     logoScale: 0.86,
     surface: "#fdfdfd",
@@ -187,6 +221,7 @@ export type Build = {
   logoScale?: number; // logo size in its tile (1 = fill)
   store?: string[]; // Play Store listing screenshots (defaults to `screens`)
   hideDots?: true; // no page dots under the screenshots
+  noSwipe?: true; // no sideways paging: screens are reached by their tap areas only
   screens: string[];
   taps?: Record<string, Tap[]>; // tap areas per screenshot url
   web?: string; // a Flutter web build to run live on the phone; screenshots stay as the fallback
