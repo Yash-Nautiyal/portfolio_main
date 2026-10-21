@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, RoundedBox, Text } from "@react-three/drei";
+import { Environment, Lightformer, RoundedBox, Text, useTexture } from "@react-three/drei";
 import { CSS3DObject, CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { JOBS } from "@/data/career";
 import { SKILLS } from "@/data/experience";
@@ -948,6 +948,51 @@ function Barcode({ w, h }: { w: number; h: number }) {
  * The holder copies the reference "Digital Pass": smoky hard plastic, thick border, an oval slot
  * in the top band, a clear window. The insert is the work ID: front = who and where, back = impact.
  */
+/** A company logo as a white silhouette (reads on any brand colour), `h` tall, top-left corner at the origin. */
+function PassLogo({ url, h }: { url: string; h: number }) {
+  const tex = useTexture(url);
+  const img = tex.image as HTMLImageElement;
+  // Keep the logo's shape, paint it white: draw it, then fill only where it has pixels.
+  const white = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = img.width;
+    c.height = img.height;
+    const g = c.getContext("2d")!;
+    g.drawImage(img, 0, 0);
+    g.globalCompositeOperation = "source-in";
+    g.fillStyle = "#fff";
+    g.fillRect(0, 0, c.width, c.height);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = 4;
+    return t;
+  }, [img]);
+  const w = h * (img.width / img.height);
+  return (
+    <mesh position={[w / 2, -h / 2, 0]}>
+      <planeGeometry args={[w, h]} />
+      <meshBasicMaterial map={white} transparent toneMapped={false} />
+    </mesh>
+  );
+}
+
+/** Top-to-bottom gradient for the pass's colour band (vertex colours on a 1×1-segment plane). */
+function GradientPlane({ w, h, top, bottom }: { w: number; h: number; top: string; bottom: string }) {
+  const geo = useMemo(() => {
+    const g = new THREE.PlaneGeometry(w, h);
+    const a = new THREE.Color(top);
+    const b = new THREE.Color(bottom);
+    // vertex order: top-left, top-right, bottom-left, bottom-right
+    g.setAttribute("color", new THREE.Float32BufferAttribute([a.r, a.g, a.b, a.r, a.g, a.b, b.r, b.g, b.b, b.r, b.g, b.b], 3));
+    return g;
+  }, [w, h, top, bottom]);
+  return (
+    <mesh geometry={geo}>
+      <meshBasicMaterial vertexColors toneMapped={false} />
+    </mesh>
+  );
+}
+
 function Pass({ w, h, job }: { w: number; h: number; job: number }) {
   const j = JOBS[job] ?? JOBS[0];
   const depth = 6;
@@ -1007,25 +1052,34 @@ function Pass({ w, h, job }: { w: number; h: number; job: number }) {
           <meshStandardMaterial color="#d5dbe2" roughness={0.6} />
         </mesh>
         <mesh geometry={insertGeo}>
-          <meshBasicMaterial color={color.clone().multiplyScalar(0.62)} />
+          <meshBasicMaterial color={j.ink} />
         </mesh>
-        <mesh position={[0, ih * 0.18, 0.25]}>
-          <planeGeometry args={[iw, ih * 0.64]} />
-          <meshBasicMaterial color={color.clone().multiplyScalar(0.7)} />
-        </mesh>
-        <Text font={FONT} fontSize={17 * f} color="#ffffff" anchorX="left" anchorY="top" position={[-iw / 2 + 12 * f, ih / 2 - 12 * f, 0.7]}>
-          {j.company}
-        </Text>
-        <Text font={FONT} fontSize={8 * f} letterSpacing={0.14} color="#ffffff" fillOpacity={0.8} anchorX="right" anchorY="top" position={[iw / 2 - 12 * f, ih / 2 - 16 * f, 0.7]}>
+        {/* the logo's colours, top of the card down to the name strip */}
+        <group position={[0, ih * 0.18, 0.25]}>
+          <GradientPlane w={iw} h={ih * 0.64} top={j.color} bottom={j.color2} />
+        </group>
+        {/* the company's logo, in white like the rest of the card's type */}
+        {j.logo ? (
+          <group position={[-iw / 2 + 10 * f, ih / 2 - 10 * f, 0.5]}>
+            <Suspense fallback={null}>
+              <PassLogo url={j.logo} h={ih * 0.12} />
+            </Suspense>
+          </group>
+        ) : (
+          <Text font={FONT} fontSize={17 * f} color="#ffffff" anchorX="left" anchorY="top" position={[-iw / 2 + 12 * f, ih / 2 - 12 * f, 0.7]}>
+            {j.company}
+          </Text>
+        )}
+        <Text font={FONT} fontSize={8 * f} letterSpacing={0.14} color="#ffffff" fillOpacity={0.85} anchorX="right" anchorY="middle" position={[iw / 2 - 12 * f, ih / 2 - 10 * f - ih * 0.06, 0.7]}>
           {j.current ? "EMPLOYEE" : "ALUMNI"}
         </Text>
-        <Text font={FONT} fontSize={74 * f} letterSpacing={-0.08} color="#ffffff" fillOpacity={0.93} anchorX="center" anchorY="middle" position={[0, ih * 0.1, 0.7]}>
+        <Text font={FONT} fontSize={74 * f} letterSpacing={-0.08} color="#ffffff" fillOpacity={0.93} anchorX="center" anchorY="middle" position={[0, ih * 0.08, 0.7]}>
           YN
         </Text>
         {/* name strip */}
         <mesh position={[0, -ih / 2 + ih * 0.15, 0.5]}>
           <planeGeometry args={[iw, ih * 0.3]} />
-          <meshBasicMaterial color="#08080a" />
+          <meshBasicMaterial color={j.ink} />
         </mesh>
         <Text font={FONT} fontSize={14 * f} color="#ffffff" anchorX="left" anchorY="top" position={[-iw / 2 + 12 * f, -ih / 2 + ih * 0.27, 0.9]}>
           Yash Nautiyal

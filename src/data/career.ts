@@ -1,10 +1,16 @@
 import { EXPERIENCE, type Experience } from "./experience";
 
 // Presentation data for the ID passes. Numbers come straight from the CV bullets in experience.ts.
-const META: Record<number, { short: string; color: string; logo: string; stats: { value: string; label: string }[] }> = {
+// Colours are taken from each company's logo: `color` → `color2` is the pass gradient, `ink` its dark text colour.
+const META: Record<
+  number,
+  { short: string; color: string; color2: string; ink: string; logo: string; stats: { value: string; label: string }[] }
+> = {
   2: {
     short: "AppX",
-    color: "#6d5efc",
+    color: "#c9381f", // the logo's red, muted
+    color2: "#5e1a0f",
+    ink: "#1c1c1c",
     logo: "/assets/experience/appx.png",
     stats: [
       { value: "500+", label: "client apps on the framework" },
@@ -14,7 +20,9 @@ const META: Record<number, { short: string; color: string; logo: string; stats: 
   },
   1: {
     short: "F13",
-    color: "#1f9d6a",
+    color: "#16999c",
+    color2: "#0e232a",
+    ink: "#0e232a",
     logo: "/assets/experience/f13.png",
     stats: [
       { value: "35%", label: "less memory" },
@@ -27,6 +35,8 @@ const META: Record<number, { short: string; color: string; logo: string; stats: 
 export type Job = Experience & {
   short: string;
   color: string;
+  color2: string;
+  ink: string;
   logo?: string; // company logo, shown on a white tile
   logoBg: string;
   logoScale: number;
@@ -42,6 +52,8 @@ export const JOBS: Job[] = EXPERIENCE.map((e) => ({
   ...e,
   short: META[e.id]?.short ?? e.company,
   color: META[e.id]?.color ?? "#54c5f8",
+  color2: META[e.id]?.color2 ?? META[e.id]?.color ?? "#54c5f8",
+  ink: META[e.id]?.ink ?? "#08080a",
   logo: META[e.id]?.logo,
   logoBg: "#fff",
   logoScale: 0.86,
